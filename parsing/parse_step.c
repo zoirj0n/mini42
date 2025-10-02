@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_step.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:20 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:20 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -46,8 +57,8 @@ static bool	fill_exec_step(t_exec_step *step, t_list *start, const t_list *end)
 				return (false);
 			ft_lstadd_back(&step->cmd->redirs, ft_lstnew(redir));
 		}
-		else if (tkn->type == DOUBLE_QUOTED_STRING
-			|| tkn->type == QUOTED_STRING || tkn->type == NORMAL)
+		else if (tkn->type == DOUBLE_QUOTED_STRING || tkn->type == QUOTED_STRING
+			|| tkn->type == NORMAL)
 			ft_lstadd_back(&step->cmd->args, ft_lstnew(ft_strdup(tkn->substr)));
 		else if (tkn->type == SUB_EXPR)
 			return (report_parsing_error(redir, step));
@@ -57,7 +68,7 @@ static bool	fill_exec_step(t_exec_step *step, t_list *start, const t_list *end)
 }
 
 static t_exec_step	*create_step(t_list *cmd_start, t_list *cmd_end,
-	t_token **token, t_list *tokens)
+		t_token **token, t_list *tokens)
 {
 	t_exec_step	*step;
 
@@ -79,7 +90,7 @@ static t_exec_step	*create_step(t_list *cmd_start, t_list *cmd_end,
 }
 
 t_list	*process_parsing_step(t_list **tokens, t_token **token, t_list **steps,
-	bool *success)
+		bool *success)
 {
 	t_list		*cmd_start;
 	t_exec_step	*step;

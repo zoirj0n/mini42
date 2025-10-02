@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_env_var.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:03 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:03 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	reprocess_environment_token(t_token *token, t_list **el, t_list **tokens)
+bool	reprocess_environment_token(t_token *token, t_list **el,
+		t_list **tokens)
 {
 	char	*substr_copy;
 	bool	success;
@@ -59,7 +71,7 @@ static char	*get_env_string(const char *line, size_t *idx)
 }
 
 t_list	*extract_environment_variable(const t_shell *shell, const char *line,
-	size_t *idx)
+		size_t *idx)
 {
 	t_token	*tkn;
 

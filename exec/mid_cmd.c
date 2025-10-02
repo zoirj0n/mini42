@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mid_cmd.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:20 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:21 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -13,7 +24,7 @@ static void	dup_heredoc_fds(t_redir *inredir, int *heredoc_fds, int *fdtmp)
 }
 
 static void	dup_pipes_and_redirs(t_exec_step *step, int *fds, int in_fd,
-	int out_fd)
+		int out_fd)
 {
 	if (step->pipe_next)
 	{
@@ -27,7 +38,7 @@ static void	dup_pipes_and_redirs(t_exec_step *step, int *fds, int in_fd,
 }
 
 static void	child_builtin_cleanup(int *out_fd, int *in_fd, int *fdtmp,
-	int exit_code)
+		int exit_code)
 {
 	close_descriptor(out_fd);
 	close_descriptor(in_fd);
@@ -42,16 +53,18 @@ static void	close_fds(const t_exec_step *step, int *fds, int *fdtmp)
 	close_descriptor(fdtmp);
 }
 
-int	*execute_pipeline_command(t_exec_step *step, int *fds, t_shell *shell, int out_fd)
+int	*execute_pipeline_command(t_exec_step *step, int *fds, t_shell *shell,
+		int out_fd)
 {
-	int			in_fd;
-	int			fdtmp;
-	int			heredoc_fds[2];
-	int			exit_code;
-	t_redir		*inredir;
+	int		in_fd;
+	int		fdtmp;
+	int		heredoc_fds[2];
+	int		exit_code;
+	t_redir	*inredir;
 
 	fdtmp = fds[0];
-	in_fd = initialize_command_execution_context(shell, &inredir, step, heredoc_fds);
+	in_fd = initialize_command_execution_context(shell, &inredir, step,
+			heredoc_fds);
 	setup_pipe_descriptors(step, fds);
 	if (step->cmd->arg_arr[0] != NULL)
 		step->cmd->pid = fork();

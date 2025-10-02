@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansion.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:47 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:48 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 static char	*create_env_var_str(const t_shell *shell, char *str,
-	const size_t start, const size_t end)
+		const size_t start, const size_t end)
 {
 	char	*before;
 	char	*env_var;
@@ -24,7 +35,7 @@ static char	*create_env_var_str(const t_shell *shell, char *str,
 }
 
 void	track_quote_state(const char *str, const size_t i, bool *in_single,
-	bool *in_double)
+		bool *in_double)
 {
 	if (str[i] == '\'' && *in_double == false)
 		*in_single = !(*in_single);

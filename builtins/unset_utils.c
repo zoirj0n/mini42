@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   unset_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:15:15 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:15:16 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:19:25 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:25 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 

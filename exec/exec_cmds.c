@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmds.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:19:51 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:52 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 static bool	run_cmds(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
-	int out_fd)
+		int out_fd)
 {
 	if (!flags->first_flag && flags->valid_redirs)
 	{
@@ -17,7 +28,7 @@ static bool	run_cmds(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
 }
 
 static t_exec_step	*run_subexpr(t_shell *shell, t_exec_step *step,
-	t_exec_flags *flags, t_list **steps)
+		t_exec_flags *flags, t_list **steps)
 {
 	if (execute_subexpression(shell, step, flags, steps) == false)
 	{
@@ -29,7 +40,7 @@ static t_exec_step	*run_subexpr(t_shell *shell, t_exec_step *step,
 }
 
 static t_exec_step	*run_exec_cmds(t_shell *shell, t_list **steps, int *out_fd,
-	t_exec_flags *flags)
+		t_exec_flags *flags)
 {
 	t_exec_step	*step;
 
@@ -38,7 +49,8 @@ static t_exec_step	*run_exec_cmds(t_shell *shell, t_list **steps, int *out_fd,
 	if (step->subexpr_line != NULL)
 		return (run_subexpr(shell, step, flags, steps));
 	flags->exit = false;
-	flags->valid_redirs = configure_redirections(shell, step, &flags->exit, out_fd);
+	flags->valid_redirs = configure_redirections(shell, step, &flags->exit,
+			out_fd);
 	configure_command_path(shell, step);
 	validate_command_execution(shell, steps, step, flags);
 	if (flags->action == BREAK)
@@ -54,7 +66,7 @@ static t_exec_step	*run_exec_cmds(t_shell *shell, t_list **steps, int *out_fd,
 }
 
 void	execute_commands(t_shell *shell, t_list *exec_steps, int step_number,
-	char *current_line)
+		char *current_line)
 {
 	t_exec_step		*step;
 	t_list			*steps;

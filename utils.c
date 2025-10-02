@@ -1,11 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:56 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:58 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 // This is ft_strjoin but with an additional argument
 // to specify which input strings to free
-char *join_and_free_strings(char *s1, char *s2, int f)
+char	*join_and_free_strings(char *s1, char *s2, int f)
 {
-	char *joined;
+	char	*joined;
 
 	joined = ft_strjoin(s1, s2);
 	if (f == 1)
@@ -20,11 +31,11 @@ char *join_and_free_strings(char *s1, char *s2, int f)
 	return (joined);
 }
 
-char *extract_and_free_substring(char *s, unsigned int start, size_t len)
+char	*extract_and_free_substring(char *s, unsigned int start, size_t len)
 {
-	char *substr;
-	size_t substr_length;
-	size_t i;
+	char	*substr;
+	size_t	substr_length;
+	size_t	i;
 
 	if (start > ft_strlen(s))
 		len = 0;
@@ -48,11 +59,11 @@ char *extract_and_free_substring(char *s, unsigned int start, size_t len)
 	return (substr);
 }
 
-char **duplicate_string_array(char **arr)
+char	**duplicate_string_array(char **arr)
 {
-	size_t len;
-	size_t i;
-	char **arr_cpy;
+	size_t	len;
+	size_t	i;
+	char	**arr_cpy;
 
 	len = 0;
 	while (arr[len] != NULL)
@@ -68,10 +79,10 @@ char **duplicate_string_array(char **arr)
 	return (arr_cpy);
 }
 
-void release_execution_steps(t_list **step_lists)
+void	release_execution_steps(t_list **step_lists)
 {
-	t_list *steps;
-	t_list *temp;
+	t_list	*steps;
+	t_list	*temp;
 
 	while ((*step_lists) != NULL)
 	{
@@ -84,12 +95,12 @@ void release_execution_steps(t_list **step_lists)
 	*step_lists = NULL;
 }
 
-char *retrieve_environment_variable(const t_shell *shell, const char *name)
+char	*retrieve_environment_variable(const t_shell *shell, const char *name)
 {
-	size_t i;
-	char **vars;
-	char *look_for;
-	size_t look_for_len;
+	size_t	i;
+	char	**vars;
+	char	*look_for;
+	size_t	look_for_len;
 
 	i = 0;
 	vars = shell->env;
@@ -104,8 +115,8 @@ char *retrieve_environment_variable(const t_shell *shell, const char *name)
 		if (ft_strncmp(vars[i], look_for, look_for_len) == 0)
 		{
 			deallocate_memory(&look_for);
-			return (ft_substr(vars[i], look_for_len,
-							  ft_strlen(vars[i]) - look_for_len + 1));
+			return (ft_substr(vars[i], look_for_len, ft_strlen(vars[i])
+					- look_for_len + 1));
 		}
 		deallocate_memory(&look_for);
 		i++;

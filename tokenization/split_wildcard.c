@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_wildcard.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:53 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:53 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -30,7 +41,7 @@ static t_wildcard	**create_wc_split(char const *str)
 }
 
 char	*build_word_string(char const *str, const size_t word_start,
-							const size_t word_end)
+		const size_t word_end)
 {
 	char	*word;
 
@@ -54,14 +65,15 @@ t_wildcard	*build_wildcard_segment(char *str, bool is_wildcard)
 }
 
 static void	add_non_wc_segment(const char *wc, size_t *i, size_t *num_words,
-	t_wildcard **wc_split)
+		t_wildcard **wc_split)
 {
 	size_t	start;
 
 	start = *i;
 	while (wc[*i] != '*' && wc[*i] != '\0')
 		*i += 1;
-	wc_split[*num_words] = build_wildcard_segment(build_word_string(wc, start, *i - 1), false);
+	wc_split[*num_words] = build_wildcard_segment(build_word_string(wc, start,
+				*i - 1), false);
 	*num_words += 1;
 }
 
@@ -79,7 +91,8 @@ t_wildcard	**parse_wildcard_pattern(const char *wc)
 		if (split_quoted_wildcard(wc, &i, &num_words, wc_split) == true)
 			continue ;
 		if (wc[i] == '*')
-			wc_split[num_words++] = build_wildcard_segment(ft_strdup("*"), true);
+			wc_split[num_words++] = build_wildcard_segment(ft_strdup("*"),
+					true);
 		while (wc[i] == '*' && wc[i] != '\0')
 			i++;
 		if (wc[i] == '\0')

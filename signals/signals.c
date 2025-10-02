@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:17:45 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:34 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -15,7 +26,6 @@ void	process_end_of_file(const char *line, t_shell *shell)
 		exit(shell->last_exit_code);
 	}
 }
-
 void	reset_after_interrupt(t_shell *shell)
 {
 	if (g_dupstdin == -1)

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_subexpr.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:19:58 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:59 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -43,11 +54,11 @@ void	bypass_subexpression_heredocs(t_list *heredocs, int num_skipped)
 }
 
 static int	parse_and_fork_subexpr(t_shell *shell, t_exec_step *step,
-	t_list **sub_steps)
+		t_list **sub_steps)
 {
-	t_list		*sub_tokens;
-	int			pid;
-	bool		success;
+	t_list	*sub_tokens;
+	int		pid;
+	bool	success;
 
 	sub_tokens = process_input_line(shell, step->subexpr_line, &success);
 	*sub_steps = analyze_token_stream(sub_tokens, &success);
@@ -70,12 +81,12 @@ static int	parse_and_fork_subexpr(t_shell *shell, t_exec_step *step,
 	return (pid);
 }
 
-bool	execute_subexpression(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
-	t_list **steps)
+bool	execute_subexpression(t_shell *shell, t_exec_step *step,
+		t_exec_flags *flags, t_list **steps)
 {
-	int			pid;
-	t_list		*sub_steps;
-	int			heredocs_to_skip;
+	int		pid;
+	t_list	*sub_steps;
+	int		heredocs_to_skip;
 
 	pid = parse_and_fork_subexpr(shell, step, &sub_steps);
 	waitpid(pid, &flags->w_status, 0);

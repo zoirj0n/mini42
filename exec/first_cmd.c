@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   first_cmd.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:09 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:10 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -22,7 +33,7 @@ static int	*run_parent_builtin(t_exec_step *step, t_shell *shell, int *fd)
 }
 
 static void	dup_pipe_fds(t_redir *inredir, int *heredoc_fds, t_exec_step *step,
-	int *fd)
+		int *fd)
 {
 	if (inredir && inredir->type == HEREDOC)
 	{
@@ -44,14 +55,16 @@ static void	dup_redir_fds(int in_fd, int out_fd)
 		dup2(out_fd, 1);
 }
 
-int	*execute_initial_command(t_exec_step *step, int *fds, t_shell *shell, int out_fd)
+int	*execute_initial_command(t_exec_step *step, int *fds, t_shell *shell,
+		int out_fd)
 {
-	int			in_fd;
-	int			heredoc_fds[2];
-	int			exit_code;
-	t_redir		*inredir;
+	int		in_fd;
+	int		heredoc_fds[2];
+	int		exit_code;
+	t_redir	*inredir;
 
-	in_fd = initialize_command_execution_context(shell, &inredir, step, heredoc_fds);
+	in_fd = initialize_command_execution_context(shell, &inredir, step,
+			heredoc_fds);
 	setup_pipe_descriptors(step, fds);
 	if (requires_parent_execution(step) && !step->pipe_next)
 		return (run_parent_builtin(step, shell, fds));

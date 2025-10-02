@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:15:17 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:15:18 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:19:29 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:30 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -56,7 +55,8 @@ void	delete_variable(t_shell *shell, const char *var)
 		deallocate_memory(&to_look);
 		return ;
 	}
-	env_copy = ft_calloc(calculate_environment_length(shell->env), sizeof(char *));
+	env_copy = ft_calloc(calculate_environment_length(shell->env),
+			sizeof(char *));
 	erase_environment_entry(shell, env_copy, to_look);
 	deallocate_memory(&shell->env);
 	deallocate_memory(&to_look);
@@ -84,7 +84,8 @@ void	delete_declared_variable(t_shell *shell, const char *var)
 		deallocate_memory(&to_look);
 		return ;
 	}
-	env_copy = ft_calloc(calculate_environment_length(shell->declared_env), sizeof(char *));
+	env_copy = ft_calloc(calculate_environment_length(shell->declared_env),
+			sizeof(char *));
 	erase_declared_entry(shell, env_copy, to_look);
 	deallocate_memory(&shell->declared_env);
 	deallocate_memory(&to_look);

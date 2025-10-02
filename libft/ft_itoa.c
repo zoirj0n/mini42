@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_itoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:21:54 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:21:55 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "libft.h"
 
@@ -37,7 +48,7 @@ static int	get_num_digits(int num)
 
 static char	*fill_digits(char *str, int num, int num_digits, int is_neg)
 {
-	int		i;
+	int	i;
 
 	i = num_digits + is_neg - 1;
 	while (i >= 0)

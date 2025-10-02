@@ -1,12 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcard.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:26 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:26 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-static char *get_dir_contents(void)
+static char	*get_dir_contents(void)
 {
-	char *contents;
-	DIR *dp;
-	struct dirent *dirp;
-	char *cwd;
+	char			*contents;
+	DIR				*dp;
+	struct dirent	*dirp;
+	char			*cwd;
 
 	cwd = getcwd(NULL, 0);
 	contents = ft_strdup("");
@@ -29,9 +40,9 @@ static char *get_dir_contents(void)
 	return (contents);
 }
 
-static char *single_wildcard(char *token)
+static char	*single_wildcard(char *token)
 {
-	char *res;
+	char	*res;
 
 	res = get_dir_contents();
 	if (*res == '\0')
@@ -42,10 +53,10 @@ static char *single_wildcard(char *token)
 	return (res);
 }
 
-static char *expand_wildcard_cleanup(char *res, char *token,
-									 t_wildcard **split_wc, char **contents)
+static char	*expand_wildcard_cleanup(char *res, char *token,
+		t_wildcard **split_wc, char **contents)
 {
-	size_t i;
+	size_t	i;
 
 	if (ft_strlen(res) == 0)
 	{
@@ -66,10 +77,10 @@ static char *expand_wildcard_cleanup(char *res, char *token,
 	return (remove_quote_characters(res));
 }
 
-static bool check_for_wildcards(t_wildcard **wildcards)
+static bool	check_for_wildcards(t_wildcard **wildcards)
 {
-	size_t i;
-	bool all_charseqs;
+	size_t	i;
+	bool	all_charseqs;
 
 	i = 0;
 	all_charseqs = true;
@@ -82,13 +93,13 @@ static bool check_for_wildcards(t_wildcard **wildcards)
 	return (all_charseqs);
 }
 
-char *apply_wildcard_expansion(char *token)
+char	*apply_wildcard_expansion(char *token)
 {
-	char **contents;
-	char *contents_str;
-	t_wildcard **wildcards;
-	int i;
-	char *res;
+	char		**contents;
+	char		*contents_str;
+	t_wildcard	**wildcards;
+	int			i;
+	char		*res;
 
 	if (ft_strncmp(token, "*", ft_strlen(token)) == 0)
 		return (single_wildcard(token));
@@ -102,7 +113,8 @@ char *apply_wildcard_expansion(char *token)
 	i = -1;
 	while (contents[++i] != NULL)
 	{
-		if (compare_string_with_wildcard(contents[i], wildcards) == true && res[0] != '\0')
+		if (compare_string_with_wildcard(contents[i], wildcards) == true
+			&& res[0] != '\0')
 			res = join_and_free_strings(res, " ", 1);
 		if (compare_string_with_wildcard(contents[i], wildcards) == true)
 			res = join_and_free_strings(res, contents[i], 1);

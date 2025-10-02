@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:14:57 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:14:58 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:18:44 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:18:47 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -117,7 +116,7 @@ void	cd_to_path(t_shell *shell, t_exec_step *step, char **env)
  */
 void	cd_to_home(t_shell *shell, t_exec_step *step, char **env, char *home)
 {
-	int		i;
+	int	i;
 
 	i = -1;
 	while (env[++i])

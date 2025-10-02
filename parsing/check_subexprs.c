@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_subexprs.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:13 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:14 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-static	bool	subexpr_parse_error(t_list *tokens, t_list *steps)
+static bool	subexpr_parse_error(t_list *tokens, t_list *steps)
 {
 	if (tokens != NULL)
 		ft_lstclear(&tokens, release_token_memory);
@@ -27,7 +38,8 @@ bool	validate_subexpressions(t_shell *shell, t_list *shell_steps)
 				return (subexpr_parse_error(tokens, NULL));
 			steps = analyze_token_stream(tokens, &success);
 			ft_lstclear(&tokens, release_token_memory);
-			if (!steps || !success || validate_subexpressions(shell, steps) == false)
+			if (!steps || !success || validate_subexpressions(shell,
+					steps) == false)
 				return (subexpr_parse_error(NULL, steps));
 			step = steps->content;
 			if (step->subexpr_line != NULL && steps->next == NULL)

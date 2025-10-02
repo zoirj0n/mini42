@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validation_message.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:26 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:27 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-void	report_command_not_found(t_shell *shell, t_exec_step *step, bool *exit_flag)
+void	report_command_not_found(t_shell *shell, t_exec_step *step,
+		bool *exit_flag)
 {
 	ft_stderr("minishell: %s: command not found\n", step->cmd->arg_arr[0]);
 	*exit_flag = true;
@@ -9,7 +21,8 @@ void	report_command_not_found(t_shell *shell, t_exec_step *step, bool *exit_flag
 	shell->last_exit_code = step->exit_code;
 }
 
-void	report_command_is_directory(t_shell *shell, t_exec_step *step, bool *exit_flag)
+void	report_command_is_directory(t_shell *shell, t_exec_step *step,
+		bool *exit_flag)
 {
 	ft_stderr("minishell: %s: is a directory\n", step->cmd->arg_arr[0]);
 	*exit_flag = true;
@@ -17,7 +30,8 @@ void	report_command_is_directory(t_shell *shell, t_exec_step *step, bool *exit_f
 	shell->last_exit_code = step->exit_code;
 }
 
-void	report_file_not_found(t_shell *shell, t_exec_step *step, bool *exit_flag)
+void	report_file_not_found(t_shell *shell, t_exec_step *step,
+		bool *exit_flag)
 {
 	ft_stderr("minishell: %s: No such file or directory\n",
 		step->cmd->arg_arr[0]);
@@ -26,7 +40,8 @@ void	report_file_not_found(t_shell *shell, t_exec_step *step, bool *exit_flag)
 	shell->last_exit_code = step->exit_code;
 }
 
-void	report_permission_denied(t_shell *shell, t_exec_step *step, bool *exit_flag)
+void	report_permission_denied(t_shell *shell, t_exec_step *step,
+		bool *exit_flag)
 {
 	ft_stderr("minishell: %s: Permission denied\n", step->cmd->arg_arr[0]);
 	*exit_flag = true;

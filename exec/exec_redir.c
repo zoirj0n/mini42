@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_redir.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:19:55 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:56 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -39,11 +50,9 @@ static bool	create_redir_file(t_redir *redir_file, int *out_fd)
 {
 	close_descriptor(out_fd);
 	if (redir_file->type == APPEND)
-		*out_fd = open(redir_file->file,
-				O_WRONLY | O_CREAT | O_APPEND, 0644);
+		*out_fd = open(redir_file->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
-		*out_fd = open(redir_file->file,
-				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		*out_fd = open(redir_file->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (*out_fd == -1)
 	{
 		ft_stderr("minishell: %s: No such file or directory\n",
@@ -81,16 +90,15 @@ static int	exec_outredir(t_exec_step *step)
 			continue ;
 		if (confirm_redirection_file_exists(redir_file, &out_fd) == false)
 			return (out_fd);
-		else
-			if (create_redir_file(redir_file, &out_fd) == false)
-				return (-2);
+		else if (create_redir_file(redir_file, &out_fd) == false)
+			return (-2);
 		redir = redir->next;
 	}
 	return (out_fd);
 }
 
 bool	configure_redirections(t_shell *shell, t_exec_step *step,
-	bool *exit_flag, int *out_fd)
+		bool *exit_flag, int *out_fd)
 {
 	bool	valid_redirs;
 

@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   export_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:15:08 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:15:09 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:19:09 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:10 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -38,8 +37,8 @@ char	**resize_string_array(char **old, size_t new_size)
 	return (new_arr);
 }
 
-bool	set_variable_value(t_shell *shell, char *to_look,
-			char *key, char *key_val)
+bool	set_variable_value(t_shell *shell, char *to_look, char *key,
+		char *key_val)
 {
 	int	i;
 

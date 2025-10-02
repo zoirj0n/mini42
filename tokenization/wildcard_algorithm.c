@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wildcard_algorithm.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:23 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:23 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-static int non_terminating_charseq(const char *str, size_t *wc_i, size_t *i,
-								   t_wildcard **wc_segs)
+static int	non_terminating_charseq(const char *str, size_t *wc_i, size_t *i,
+		t_wildcard **wc_segs)
 {
-	size_t seg_length;
+	size_t	seg_length;
 
 	seg_length = ft_strlen(wc_segs[*wc_i]->str);
 	if (wc_segs[*wc_i]->is_wildcard == false && wc_segs[*wc_i + 1] != NULL)
@@ -23,15 +34,16 @@ static int non_terminating_charseq(const char *str, size_t *wc_i, size_t *i,
 	return (CONTINUE);
 }
 
-static int non_terminating_wildcard(const char *str, size_t *wc_i, size_t *i,
-									t_wildcard **wc_segs)
+static int	non_terminating_wildcard(const char *str, size_t *wc_i, size_t *i,
+		t_wildcard **wc_segs)
 {
-	size_t seg_length;
+	size_t	seg_length;
 
 	seg_length = ft_strlen(wc_segs[*wc_i + 1]->str);
 	if (wc_segs[*wc_i]->is_wildcard == true && wc_segs[*wc_i + 1] != NULL)
 	{
-		while (str[*i] != '\0' && ft_strncmp(&str[*i], wc_segs[*wc_i + 1]->str, seg_length) != 0)
+		while (str[*i] != '\0' && ft_strncmp(&str[*i], wc_segs[*wc_i + 1]->str,
+				seg_length) != 0)
 			*i += 1;
 		if (str[*i] == '\0')
 			return (FALSE);
@@ -40,13 +52,13 @@ static int non_terminating_wildcard(const char *str, size_t *wc_i, size_t *i,
 	return (CONTINUE);
 }
 
-static int terminating_charseq(const char *str, size_t *wc_i, size_t *i,
-							   t_wildcard **wc_segs)
+static int	terminating_charseq(const char *str, size_t *wc_i, size_t *i,
+		t_wildcard **wc_segs)
 {
 	if (wc_segs[*wc_i]->is_wildcard == false && wc_segs[*wc_i + 1] == NULL)
 	{
 		if (ft_strncmp(&str[*i], wc_segs[*wc_i]->str,
-					   ft_strlen(wc_segs[*wc_i]->str)) == 0)
+				ft_strlen(wc_segs[*wc_i]->str)) == 0)
 		{
 			*i += ft_strlen(wc_segs[*wc_i]->str);
 			if (str[*i] == '\0')
@@ -59,11 +71,11 @@ static int terminating_charseq(const char *str, size_t *wc_i, size_t *i,
 	return (CONTINUE);
 }
 
-bool compare_string_with_wildcard(const char *str, t_wildcard **wc_segs)
+bool	compare_string_with_wildcard(const char *str, t_wildcard **wc_segs)
 {
-	size_t i;
-	size_t wc_i;
-	int res;
+	size_t	i;
+	size_t	wc_i;
+	int		res;
 
 	i = 0;
 	wc_i = 0;

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_normal.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:11 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:11 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -32,8 +43,8 @@ static t_token	*skip_to_end_token(const char *line, size_t *i, t_token *tkn)
 	return (tkn);
 }
 
-t_list	*create_normal_token(const t_shell *shell, const char *line, size_t *idx,
-	bool expand_var)
+t_list	*create_normal_token(const t_shell *shell, const char *line,
+		size_t *idx, bool expand_var)
 {
 	size_t	i;
 	t_token	*tkn;

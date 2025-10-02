@@ -1,8 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_env_var_str.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:59 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:00 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-static	t_list	*tokenize_inside_envvar(const char *line,
-	size_t *idx)
+static t_list	*tokenize_inside_envvar(const char *line, size_t *idx)
 {
 	size_t	i;
 	t_token	*tkn;
@@ -23,8 +33,7 @@ static	t_list	*tokenize_inside_envvar(const char *line,
 	return (el);
 }
 
-t_list	*process_environment_string(const char *line,
-	bool *success)
+t_list	*process_environment_string(const char *line, bool *success)
 {
 	size_t	i;
 	t_list	*tokens;

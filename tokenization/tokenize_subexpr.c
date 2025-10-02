@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_subexpr.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:20 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:20 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -10,7 +21,7 @@ static void	*parse_error(const char *msg, t_token *tkn)
 }
 
 static t_list	*tokenize_subexpr_helper(const t_shell *shell, t_token *tkn,
-	const char *line, size_t *idx)
+		const char *line, size_t *idx)
 {
 	bool	success;
 	t_list	*el;
@@ -27,7 +38,8 @@ static t_list	*tokenize_subexpr_helper(const t_shell *shell, t_token *tkn,
 	return (el);
 }
 
-t_list	*create_subexpression_token(const t_shell *shell, const char *line, size_t *idx)
+t_list	*create_subexpression_token(const t_shell *shell, const char *line,
+		size_t *idx)
 {
 	size_t	i;
 	t_token	*token;

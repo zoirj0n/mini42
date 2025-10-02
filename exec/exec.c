@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:05 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:05 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -7,8 +18,9 @@ void	configure_command_path(t_shell *shell, t_exec_step *step)
 
 	if (step->cmd->arg_arr[0] && step->cmd->arg_arr[0][0] != '\0'
 		&& access(step->cmd->arg_arr[0], X_OK) == -1
-		&& !check_builtin_command(step) && !check_directory_status(step->cmd->arg_arr[0])
-		&& ft_strchr(step->cmd->arg_arr[0], '/') == NULL )
+		&& !check_builtin_command(step)
+		&& !check_directory_status(step->cmd->arg_arr[0])
+		&& ft_strchr(step->cmd->arg_arr[0], '/') == NULL)
 	{
 		cmd_copy = resolve_command_path(step->cmd->arg_arr[0], shell->env);
 		if (cmd_copy != NULL)
@@ -31,8 +43,8 @@ t_list	*rewind_to_step(t_list *exec_steps, int step_number_start)
 	return (steps);
 }
 
-void	initialize_command_execution(t_shell *shell, int *out_fd, t_exec_flags *flags,
-	int step_number)
+void	initialize_command_execution(t_shell *shell, int *out_fd,
+		t_exec_flags *flags, int step_number)
 {
 	shell->fd[0] = -1;
 	shell->fd[1] = -1;
@@ -44,7 +56,7 @@ void	initialize_command_execution(t_shell *shell, int *out_fd, t_exec_flags *fla
 }
 
 t_list	*navigate_to_step(t_exec_flags *flags, t_list *exec_steps,
-	t_exec_step **step)
+		t_exec_step **step)
 {
 	t_list	*steps;
 

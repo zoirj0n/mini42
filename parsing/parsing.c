@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:25 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:26 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-static bool	parse_subexpr(t_token *token, t_list **steps,
-	t_list *tokens, bool *success)
+static bool	parse_subexpr(t_token *token, t_list **steps, t_list *tokens,
+		bool *success)
 {
 	t_exec_step	*step;
 
@@ -21,8 +32,8 @@ static bool	parse_subexpr(t_token *token, t_list **steps,
 
 t_list	*analyze_token_stream(t_list *tokens, bool *success)
 {
-	t_token		*token;
-	t_list		*steps;
+	t_token	*token;
+	t_list	*steps;
 
 	steps = NULL;
 	*success = detect_parsing_errors(tokens);

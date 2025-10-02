@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:14:55 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:14:57 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:18:36 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:18:37 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -21,7 +20,8 @@
  * @param env
  * @param home
  */
-void	navigate_to_home(t_shell *shell, t_exec_step *step, char **env, char *home)
+void	navigate_to_home(t_shell *shell, t_exec_step *step, char **env,
+		char *home)
 {
 	char	*oldpwd;
 

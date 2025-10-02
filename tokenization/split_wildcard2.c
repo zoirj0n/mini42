@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   split_wildcard2.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:55 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:56 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -19,11 +30,11 @@ bool	count_quoted_words(const char *str, size_t *num_words, size_t *i)
 }
 
 bool	split_quoted_wildcard(const char *wc, size_t *i, size_t *word_count,
-	t_wildcard **wc_split)
+		t_wildcard **wc_split)
 {
-	char		quote;
-	char		*wc_seg;
-	size_t		start;
+	char	quote;
+	char	*wc_seg;
+	size_t	start;
 
 	if (wc[*i] == '\'' || wc[*i] == '\"')
 	{

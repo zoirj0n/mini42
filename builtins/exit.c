@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:15:02 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:15:03 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:19:04 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:05 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -65,10 +64,10 @@ void	terminate_shell(t_exec_step *step, t_shell *shell, bool child)
 	j = 0;
 	check = true;
 	if (step->cmd->arg_arr[1] && (step->cmd->arg_arr[1][i] == '-'
-		|| step->cmd->arg_arr[1][i] == '+'))
+			|| step->cmd->arg_arr[1][i] == '+'))
 		i++;
 	while (step->cmd->arg_arr[1] && step->cmd->arg_arr[1][i] >= '0'
-			&& step->cmd->arg_arr[1][i] <= '9')
+		&& step->cmd->arg_arr[1][i] <= '9')
 		i++;
 	check_valid_args(shell, step, i, &j);
 	if (!j && step->cmd->arg_arr[1] != NULL)

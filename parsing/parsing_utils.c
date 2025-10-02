@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:24:22 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:24:23 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -64,9 +75,7 @@ void	convert_list_to_array(void *step_ptr)
 
 bool	check_token_terminator(const t_token *token)
 {
-	if (token->type == PIPE
-		|| token->type == AND
-		|| token->type == OR)
+	if (token->type == PIPE || token->type == AND || token->type == OR)
 		return (true);
 	return (false);
 }

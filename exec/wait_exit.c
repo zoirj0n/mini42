@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   wait_exit.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:30 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:31 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -8,7 +19,8 @@ static t_list	*wait_cmds(t_list *steps, t_exec_flags *flags)
 	while (steps && flags->step_num_start < flags->step_num)
 	{
 		step = steps->content;
-		if (step->cmd->arg_arr[0] && !check_directory_status(step->cmd->arg_arr[0])
+		if (step->cmd->arg_arr[0]
+			&& !check_directory_status(step->cmd->arg_arr[0])
 			&& (access(step->cmd->arg_arr[0], X_OK) != -1
 				|| check_builtin_command(step)))
 		{
@@ -22,7 +34,8 @@ static t_list	*wait_cmds(t_list *steps, t_exec_flags *flags)
 	return (steps);
 }
 
-int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step, t_exec_flags *flags)
+int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step,
+		t_exec_flags *flags)
 {
 	if (!flags->exit && !WIFEXITED(flags->w_status)
 		&& WIFSIGNALED(flags->w_status))
@@ -48,7 +61,7 @@ int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step, t_exec_flags *fl
 }
 
 t_list	*await_completion_and_get_status(t_shell *shell, t_exec_step *step,
-	t_list *exec_steps, t_exec_flags *flags)
+		t_list *exec_steps, t_exec_flags *flags)
 {
 	t_list	*steps;
 	int		i;

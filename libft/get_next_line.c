@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:23:38 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:23:39 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "get_next_line.h"
 
@@ -33,7 +44,7 @@ char	*ft_readline(int fd, char *s, size_t buff)
 		ft_gnl_free(str, s);
 		return (NULL);
 	}
-	free (str);
+	free(str);
 	return (s);
 }
 
@@ -87,7 +98,7 @@ char	*ft_newline(char *str)
 	while (str[i])
 		s[j++] = str[i++];
 	s[j] = '\0';
-	free (str);
+	free(str);
 	return (s);
 }
 

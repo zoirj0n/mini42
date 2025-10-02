@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   validate_redir.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:23 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:24 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -9,7 +20,7 @@
  * @return true
  * @return false
  */
-static bool	check_input_redir(t_redir	*redir_file)
+static bool	check_input_redir(t_redir *redir_file)
 {
 	if (redir_file->type == INPUT_REDIR)
 	{
@@ -21,8 +32,7 @@ static bool	check_input_redir(t_redir	*redir_file)
 		}
 		if (access(redir_file->file, R_OK) == -1)
 		{
-			ft_stderr("minishell: %s: Permission denied\n",
-				redir_file->file);
+			ft_stderr("minishell: %s: Permission denied\n", redir_file->file);
 			return (false);
 		}
 	}
@@ -37,16 +47,14 @@ static bool	check_input_redir(t_redir	*redir_file)
  * @return true
  * @return false
  */
-static bool	check_output_redir(t_redir	*redir_file)
+static bool	check_output_redir(t_redir *redir_file)
 {
 	if (redir_file->type == OUTPUT_REDIR || redir_file->type == APPEND)
 	{
-		if ((access(redir_file->file, F_OK) != -1
-				&& access(redir_file->file, W_OK) == -1)
-			|| check_directory_status(redir_file->file))
+		if ((access(redir_file->file, F_OK) != -1 && access(redir_file->file,
+					W_OK) == -1) || check_directory_status(redir_file->file))
 		{
-			ft_stderr("minishell: %s: Permission denied\n",
-				redir_file->file);
+			ft_stderr("minishell: %s: Permission denied\n", redir_file->file);
 			return (false);
 		}
 	}
@@ -102,9 +110,8 @@ bool	confirm_redirection_file_exists(t_redir *redir_file, int *out_fd)
 			ft_stderr("minishell: %s: failed to open\n", redir_file->file);
 		return (true);
 	}
-	else if ((access(redir_file->file, F_OK) != -1
-			&& access(redir_file->file, W_OK) == -1)
-		|| check_directory_status(redir_file->file))
+	else if ((access(redir_file->file, F_OK) != -1 && access(redir_file->file,
+				W_OK) == -1) || check_directory_status(redir_file->file))
 		return (false);
 	return (true);
 }
@@ -126,9 +133,8 @@ int	verify_redirection_access(t_redir *redir_file, t_list **redir)
 	}
 	else if (redir_file->type == OUTPUT_REDIR || redir_file->type == APPEND)
 	{
-		if ((access(redir_file->file, F_OK) != -1
-				&& access(redir_file->file, W_OK) == -1)
-			|| check_directory_status(redir_file->file))
+		if ((access(redir_file->file, F_OK) != -1 && access(redir_file->file,
+					W_OK) == -1) || check_directory_status(redir_file->file))
 			return (1);
 	}
 	if (redir_file->type == INPUT_REDIR || redir_file->type == HEREDOC)

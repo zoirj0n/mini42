@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:22:25 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:22:26 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "libft.h"
 
@@ -10,7 +21,7 @@ void	*ft_memchr(const void *s, int c, size_t n)
 	bytes = (unsigned char *)s;
 	while (i < n)
 	{
-		if (bytes[i] == (unsigned char) c)
+		if (bytes[i] == (unsigned char)c)
 			return (&bytes[i]);
 		i++;
 	}

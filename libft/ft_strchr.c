@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:22:54 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:22:55 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "libft.h"
 
@@ -9,14 +20,14 @@ char	*ft_strchr(const char *s, int c)
 	i = 0;
 	if (s == NULL)
 		return (NULL);
-	to_find = (char) c;
+	to_find = (char)c;
 	while (s[i] != '\0')
 	{
 		if (s[i] == to_find)
-			return ((char *) &s[i]);
+			return ((char *)&s[i]);
 		i++;
 	}
 	if (s[i] == to_find)
-		return ((char *) &s[i]);
+		return ((char *)&s[i]);
 	return (NULL);
 }

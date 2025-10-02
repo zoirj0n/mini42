@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_quotes.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:17 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:17 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -9,9 +20,8 @@ static void	*parse_error(const char *msg, t_token *tkn)
 	return (NULL);
 }
 
-
 static t_list	*create_token_el(const t_shell *shell, t_token *tkn,
-	const char *line, const bool expand_var)
+		const char *line, const bool expand_var)
 {
 	t_list	*el;
 
@@ -34,11 +44,11 @@ static t_list	*create_token_el(const t_shell *shell, t_token *tkn,
 }
 
 t_list	*create_single_quote_token(const t_shell *shell, const char *line,
-	size_t *idx)
+		size_t *idx)
 {
-	size_t  i;
-	t_token *tkn;
-	t_list  *el;
+	size_t	i;
+	t_token	*tkn;
+	t_list	*el;
 
 	i = *idx + 1;
 	tkn = ft_calloc(1, sizeof(t_token));
@@ -60,11 +70,11 @@ t_list	*create_single_quote_token(const t_shell *shell, const char *line,
 }
 
 t_list	*create_double_quote_token(const t_shell *shell, const char *line,
-	size_t *idx, const bool expand_var)
+		size_t *idx, const bool expand_var)
 {
-	size_t  i;
-	t_token *tkn;
-	t_list  *el;
+	size_t	i;
+	t_token	*tkn;
+	t_list	*el;
 
 	i = *idx + 1;
 	tkn = ft_calloc(1, sizeof(t_token));

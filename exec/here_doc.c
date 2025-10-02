@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:16 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:17 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -39,7 +50,7 @@ static char	*read_from_stdin(const t_shell *shell, char *limiter)
 }
 
 static void	run_heredoc(const t_shell *shell, t_exec_step *step,
-	t_list **heredocs)
+		t_list **heredocs)
 {
 	t_list	*redirs;
 	t_redir	*redir;

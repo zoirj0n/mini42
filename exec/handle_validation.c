@@ -1,11 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_validation.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:20:13 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:20:14 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 static bool	handle_invalid_path(t_shell *shell, t_exec_step *step,
-	t_exec_flags *flags)
+		t_exec_flags *flags)
 {
-	ft_stderr("minishell: %s: command not found\n",
-		step->cmd->arg_arr[0]);
+	ft_stderr("minishell: %s: command not found\n", step->cmd->arg_arr[0]);
 	flags->exit = true;
 	step->exit_code = 127;
 	shell->last_exit_code = step->exit_code;
@@ -19,11 +29,12 @@ static bool	handle_invalid_path(t_shell *shell, t_exec_step *step,
 }
 
 static bool	handle_invalid_cmd(t_shell *shell, t_exec_step *step,
-	t_exec_flags *flags)
+		t_exec_flags *flags)
 {
 	if (detect_missing_command(step, flags->valid_redirs))
 		report_command_not_found(shell, step, &flags->exit);
-	else if (check_directory_status(step->cmd->arg_arr[0]) && flags->valid_redirs)
+	else if (check_directory_status(step->cmd->arg_arr[0])
+		&& flags->valid_redirs)
 		report_command_is_directory(shell, step, &flags->exit);
 	else if (detect_missing_file(step, flags->valid_redirs))
 		report_file_not_found(shell, step, &flags->exit);
@@ -36,8 +47,8 @@ static bool	handle_invalid_cmd(t_shell *shell, t_exec_step *step,
 	return (true);
 }
 
-void	validate_command_execution(t_shell *shell, t_list **steps, t_exec_step *step,
-	t_exec_flags *flags)
+void	validate_command_execution(t_shell *shell, t_list **steps,
+		t_exec_step *step, t_exec_flags *flags)
 {
 	if (verify_path_validity(step) == true)
 	{

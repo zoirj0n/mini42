@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmd_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:19:44 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:45 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	open_last_redir(t_list *hd_contents, t_exec_step *step,
-	int *heredoc_fds, t_redir **inredir)
+		int *heredoc_fds, t_redir **inredir)
 {
-	int			in_fd;
+	int	in_fd;
 
 	in_fd = -1;
 	*inredir = retrieve_last_input_redirect(step->cmd->redirs);
@@ -29,7 +40,7 @@ static int	open_last_redir(t_list *hd_contents, t_exec_step *step,
 }
 
 int	*cleanup_command_resources(int *fds, int *in_fd, int *out_fd,
-	int *heredoc_fds)
+		int *heredoc_fds)
 {
 	close_descriptor(in_fd);
 	close_descriptor(out_fd);
@@ -39,8 +50,8 @@ int	*cleanup_command_resources(int *fds, int *in_fd, int *out_fd,
 	return (fds);
 }
 
-int	initialize_command_execution_context(t_shell *shell, t_redir **inredir, t_exec_step *step,
-	int *heredoc_fds)
+int	initialize_command_execution_context(t_shell *shell, t_redir **inredir,
+		t_exec_step *step, int *heredoc_fds)
 {
 	int	in_fd;
 
@@ -49,13 +60,13 @@ int	initialize_command_execution_context(t_shell *shell, t_redir **inredir, t_ex
 	heredoc_fds[1] = -1;
 	in_fd = -1;
 	if (step->cmd->redirs)
-		in_fd = open_last_redir(shell->heredoc_contents, step,
-				heredoc_fds, inredir);
+		in_fd = open_last_redir(shell->heredoc_contents, step, heredoc_fds,
+				inredir);
 	return (in_fd);
 }
 
 int	execute_builtin_in_child(t_shell *shell, t_exec_step *step, int *fds,
-	int *heredoc_fds)
+		int *heredoc_fds)
 {
 	int	exit_code;
 

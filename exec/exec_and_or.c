@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_and_or.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:19:48 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:49 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	handle_and_next(t_shell *shell, t_list **steps, t_exec_step *step,
-	int step_number)
+		int step_number)
 {
 	if (shell->last_exit_code != 0)
 	{
@@ -27,7 +38,7 @@ static int	handle_and_next(t_shell *shell, t_list **steps, t_exec_step *step,
 }
 
 static int	handle_or_next(t_shell *shell, t_list **steps, t_exec_step *step,
-	int step_number)
+		int step_number)
 {
 	if (shell->last_exit_code == 0)
 	{
@@ -55,9 +66,9 @@ static int	handle_or_next(t_shell *shell, t_list **steps, t_exec_step *step,
 
 static void	reparse(t_shell *shell, char *current_line, int step_number)
 {
-	t_list		*tokens;
-	t_list		*new_steps;
-	bool		success;
+	t_list	*tokens;
+	t_list	*new_steps;
+	bool	success;
 
 	ft_lstclear(&shell->tokens, release_token_memory);
 	tokens = process_input_line(shell, current_line, &success);
@@ -68,8 +79,8 @@ static void	reparse(t_shell *shell, char *current_line, int step_number)
 	execute_commands(shell, new_steps, step_number, current_line);
 }
 
-void	process_logical_operators(t_shell *shell, t_exec_step *step, int step_number,
-	t_list **steps)
+void	process_logical_operators(t_shell *shell, t_exec_step *step,
+		int step_number, t_list **steps)
 {
 	if (step && step->and_next)
 		step_number = handle_and_next(shell, steps, step, step_number);

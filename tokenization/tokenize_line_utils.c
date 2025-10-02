@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:05 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:05 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -44,7 +55,7 @@ bool	check_previous_heredoc(t_list *tokens)
 }
 
 bool	process_wildcard_token(const t_shell *shell, t_list **el,
-	t_list **tokens, bool *success)
+		t_list **tokens, bool *success)
 {
 	t_token	*token;
 	t_list	*wildcard_tokens;
@@ -85,8 +96,8 @@ bool	detect_token_syntax_errors(const char *line, bool *success)
 	{
 		update_quote_state(line[i], &quote, &in_quotes);
 		if (!in_quotes && (line[i] == '\\' || line[i] == ';' || line[i] == '`'
-				|| (line[i] == '&' && line[i + 1] != '&')
-				|| (line[i] == '(' && line[i + 1] == ')')))
+				|| (line[i] == '&' && line[i + 1] != '&') || (line[i] == '('
+					&& line[i + 1] == ')')))
 		{
 			ft_stderr("Parse Error: Invalid input\n");
 			*success = false;

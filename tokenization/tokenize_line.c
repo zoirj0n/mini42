@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:08 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:08 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
-void	cleanup_environment_tokenization(t_list **el,
-	t_list **tokens, bool *success)
+void	cleanup_environment_tokenization(t_list **el, t_list **tokens,
+		bool *success)
 {
 	t_token	*token;
 
@@ -15,8 +26,8 @@ void	cleanup_environment_tokenization(t_list **el,
 		token->substr = ft_strdup("");
 		ft_lstadd_back(tokens, *el);
 	}
-	else if (ft_strlen(token->substr) != 0
-		&& ft_strchr(token->substr, '$') != NULL)
+	else if (ft_strlen(token->substr) != 0 && ft_strchr(token->substr,
+			'$') != NULL)
 		ft_lstadd_back(tokens, *el);
 	else if (ft_strlen(token->substr) != 0)
 	{
@@ -30,7 +41,7 @@ void	cleanup_environment_tokenization(t_list **el,
 }
 
 bool	process_primary_tokens(const t_shell *shell, const char *line,
-	size_t *i, t_list **tokens)
+		size_t *i, t_list **tokens)
 {
 	t_list	*el;
 	bool	success;
@@ -55,7 +66,7 @@ bool	process_primary_tokens(const t_shell *shell, const char *line,
 }
 
 bool	process_secondary_tokens(const t_shell *shell, const char *line,
-	size_t *i, t_list **tokens)
+		size_t *i, t_list **tokens)
 {
 	t_list	*el;
 	bool	success;
@@ -85,7 +96,7 @@ bool	process_secondary_tokens(const t_shell *shell, const char *line,
 }
 
 bool	process_text_and_wildcard(const t_shell *shell, const char *line,
-	size_t *i, t_list **tokens)
+		size_t *i, t_list **tokens)
 {
 	t_list	*el;
 	bool	success;
@@ -109,7 +120,8 @@ bool	process_text_and_wildcard(const t_shell *shell, const char *line,
 	return (true);
 }
 
-t_list	*process_input_line(const t_shell *shell, const char *line, bool *success)
+t_list	*process_input_line(const t_shell *shell, const char *line,
+		bool *success)
 {
 	size_t	i;
 	t_list	*tokens;
@@ -121,8 +133,8 @@ t_list	*process_input_line(const t_shell *shell, const char *line, bool *success
 	i = 0;
 	while (line[i] != '\0')
 	{
-		if (line[i] == '\'' || line[i] == '\"' || detect_operator_character(line, i) == true
-			|| line[i] == '(')
+		if (line[i] == '\'' || line[i] == '\"'
+			|| detect_operator_character(line, i) == true || line[i] == '(')
 			*success = process_primary_tokens(shell, line, &i, &tokens);
 		else if ((line[i] == '$' && check_previous_heredoc(tokens) == false)
 			|| line[i] == ')')

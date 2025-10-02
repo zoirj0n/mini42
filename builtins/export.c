@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/01 18:15:05 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/01 18:15:06 by zoisobir         ###   ########.fr       */
+/*   Created: 2025/10/02 19:19:14 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:19:14 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -35,7 +34,8 @@ void	modify_environment_variable(t_shell *shell, const char *str)
 		return ;
 	deallocate_memory(&to_look);
 	deallocate_memory(&key);
-	shell->env = resize_string_array(shell->env, calculate_environment_length(shell->env) + 1);
+	shell->env = resize_string_array(shell->env,
+			calculate_environment_length(shell->env) + 1);
 	shell->env[calculate_environment_length(shell->env)] = key_val;
 }
 
@@ -43,8 +43,8 @@ bool	validate_export_argument(const char *arg)
 {
 	size_t	i;
 
-	if (ft_isdigit(arg[0]) || arg[0] == '='
-		|| (!ft_isalpha(arg[0]) && arg[0] != '_'))
+	if (ft_isdigit(arg[0]) || arg[0] == '=' || (!ft_isalpha(arg[0])
+			&& arg[0] != '_'))
 		return (false);
 	i = 1;
 	while (arg[i] != '=' && arg[i] != '\0')

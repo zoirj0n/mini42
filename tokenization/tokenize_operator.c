@@ -1,21 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_operator.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/02 19:25:15 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/02 19:25:15 by mdheen           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
 bool	detect_operator_character(const char *line, const size_t i)
 {
-	if ((line[i] == '>' && line[i + 1] != '>')
-		|| (line[i] == '<' && line[i + 1] != '<')
-		|| (line[i] == '<' && line[i + 1] == '<')
-		|| (line[i] == '>' && line[i + 1] == '>')
-		|| (line[i] == '|' && line[i + 1] != '|')
-		|| (line[i] == '&' && line[i + 1] == '&')
+	if ((line[i] == '>' && line[i + 1] != '>') || (line[i] == '<' && line[i
+			+ 1] != '<') || (line[i] == '<' && line[i + 1] == '<')
+		|| (line[i] == '>' && line[i + 1] == '>') || (line[i] == '|' && line[i
+			+ 1] != '|') || (line[i] == '&' && line[i + 1] == '&')
 		|| (line[i] == '|' && line[i + 1] == '|'))
 		return (true);
 	return (false);
 }
 
 t_list	*create_operator_token(const char *line, size_t *idx,
-							const t_token_type type)
+		const t_token_type type)
 {
 	t_token	*token;
 	t_list	*el;
@@ -26,8 +35,8 @@ t_list	*create_operator_token(const char *line, size_t *idx,
 	token->start = *idx;
 	token->type = type;
 	token->end = *idx;
-	if (type == HEREDOC || type == APPEND || type == LAST_EXIT
-		|| type == AND || type == OR)
+	if (type == HEREDOC || type == APPEND || type == LAST_EXIT || type == AND
+		|| type == OR)
 	{
 		token->end++;
 		token->substr = ft_substr(line, token->start, 2);
@@ -37,8 +46,8 @@ t_list	*create_operator_token(const char *line, size_t *idx,
 	el = ft_lstnew(token);
 	if (token->substr == NULL || el == NULL)
 		return (NULL);
-	if (type == HEREDOC || type == APPEND || type == LAST_EXIT
-		|| type == AND || type == OR)
+	if (type == HEREDOC || type == APPEND || type == LAST_EXIT || type == AND
+		|| type == OR)
 		*idx += 1;
 	return (el);
 }
