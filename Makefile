@@ -10,22 +10,14 @@ NAME        := minishell
 CC          := cc
 CFLAGS      := -Wall -Wextra -Werror -g
 
-# ---------- Readline (Homebrew) autodetect ----------
-READLINE_PREFIX ?= $(shell brew --prefix readline 2>/dev/null)
-ifeq ($(READLINE_PREFIX),)
-  # Fallbacks: Apple Silicon first, then Intel
-  ifneq ("$(wildcard /opt/homebrew/opt/readline)","")
-    READLINE_PREFIX := /opt/homebrew/opt/readline
-  else
-    READLINE_PREFIX := /usr/local/opt/readline
-  endif
-endif
+# ---------- Readline fixed path ----------
+RLFLAGS = -lreadline -lhistory
+RLDIR   = -L/opt/vagrant/embedded/lib
+RLINC   = -I/opt/vagrant/embedded/include/readline
 
-INCLUDES    := -Iincludes -Ift_printf -Ilibft -I$(READLINE_PREFIX)/include
-CFLAGS      += $(INCLUDES)
-
-LDFLAGS     := -L$(READLINE_PREFIX)/lib
-LIBS        := -lreadline -lncurses
+CFLAGS += $(RLINC) -Iincludes -Ift_printf -Ilibft
+LDFLAGS += $(RLDIR)
+LIBS = $(RLFLAGS)
 
 LIBFT       := libft/libft.a
 FT_PRINTF   := ft_printf/libftprintf.a

@@ -16,9 +16,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>
-#ifdef __APPLE__
-#define rl_replace_line(text, clear_undo) rl_set_prompt(text)
-#endif
+void rl_replace_line(const char *text,int clear_undo);
 int g_dupstdin;
 
 typedef struct s_shell t_shell;
