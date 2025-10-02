@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-bool	is_operator(const char *line, const size_t i)
+bool	detect_operator_character(const char *line, const size_t i)
 {
 	if ((line[i] == '>' && line[i + 1] != '>')
 		|| (line[i] == '<' && line[i + 1] != '<')
@@ -14,7 +14,7 @@ bool	is_operator(const char *line, const size_t i)
 	return (false);
 }
 
-t_list	*tokenize_operator(const char *line, size_t *idx,
+t_list	*create_operator_token(const char *line, size_t *idx,
 							const t_token_type type)
 {
 	t_token	*token;

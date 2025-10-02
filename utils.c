@@ -3,24 +3,24 @@
 
 // This is ft_strjoin but with an additional argument
 // to specify which input strings to free
-char *strjoin_free(char *s1, char *s2, int f)
+char *join_and_free_strings(char *s1, char *s2, int f)
 {
 	char *joined;
 
 	joined = ft_strjoin(s1, s2);
 	if (f == 1)
-		ft_free(&s1);
+		deallocate_memory(&s1);
 	if (f == 2)
-		ft_free(&s2);
+		deallocate_memory(&s2);
 	if (f == 3)
 	{
-		ft_free(&s1);
-		ft_free(&s2);
+		deallocate_memory(&s1);
+		deallocate_memory(&s2);
 	}
 	return (joined);
 }
 
-char *substr_free(char *s, unsigned int start, size_t len)
+char *extract_and_free_substring(char *s, unsigned int start, size_t len)
 {
 	char *substr;
 	size_t substr_length;
@@ -44,11 +44,11 @@ char *substr_free(char *s, unsigned int start, size_t len)
 		i++;
 	}
 	substr[i] = '\0';
-	ft_free(&s);
+	deallocate_memory(&s);
 	return (substr);
 }
 
-char **copy_str_arr(char **arr)
+char **duplicate_string_array(char **arr)
 {
 	size_t len;
 	size_t i;
@@ -68,7 +68,7 @@ char **copy_str_arr(char **arr)
 	return (arr_cpy);
 }
 
-void free_steps(t_list **step_lists)
+void release_execution_steps(t_list **step_lists)
 {
 	t_list *steps;
 	t_list *temp;
@@ -77,14 +77,14 @@ void free_steps(t_list **step_lists)
 	{
 		steps = (*step_lists)->content;
 		temp = (*step_lists)->next;
-		ft_lstclear(&steps, free_exec_step);
-		ft_free(step_lists);
+		ft_lstclear(&steps, release_execution_step);
+		deallocate_memory(step_lists);
 		(*step_lists) = temp;
 	}
 	*step_lists = NULL;
 }
 
-char *get_env(const t_shell *shell, const char *name)
+char *retrieve_environment_variable(const t_shell *shell, const char *name)
 {
 	size_t i;
 	char **vars;
@@ -103,11 +103,11 @@ char *get_env(const t_shell *shell, const char *name)
 		look_for_len = ft_strlen(look_for);
 		if (ft_strncmp(vars[i], look_for, look_for_len) == 0)
 		{
-			ft_free(&look_for);
+			deallocate_memory(&look_for);
 			return (ft_substr(vars[i], look_for_len,
 							  ft_strlen(vars[i]) - look_for_len + 1));
 		}
-		ft_free(&look_for);
+		deallocate_memory(&look_for);
 		i++;
 	}
 	return (NULL);

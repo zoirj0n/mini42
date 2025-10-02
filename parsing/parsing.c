@@ -14,18 +14,18 @@ static bool	parse_subexpr(t_token *token, t_list **steps,
 	}
 	step->subexpr_line = ft_strdup(token->substr);
 	ft_lstadd_back(steps, ft_lstnew(step));
-	if (check_next_subexpr_token(tokens, &token, step, success) == false)
+	if (validate_subexpression_token(tokens, &token, step, success) == false)
 		return (false);
 	return (true);
 }
 
-t_list	*parse_tokens(t_list *tokens, bool *success)
+t_list	*analyze_token_stream(t_list *tokens, bool *success)
 {
 	t_token		*token;
 	t_list		*steps;
 
 	steps = NULL;
-	*success = check_for_errors(tokens);
+	*success = detect_parsing_errors(tokens);
 	if (*success == false)
 		return (steps);
 	while (tokens != NULL)
@@ -33,13 +33,13 @@ t_list	*parse_tokens(t_list *tokens, bool *success)
 		token = tokens->content;
 		if (token->type == SUB_EXPR)
 			parse_subexpr(token, &steps, tokens, success);
-		else if (is_terminator(token) == false)
-			steps = parse_step(&tokens, &token, &steps, success);
+		else if (check_token_terminator(token) == false)
+			steps = process_parsing_step(&tokens, &token, &steps, success);
 		if (*success == false)
 			return (steps);
 		tokens = tokens->next;
 	}
-	ft_lstiter(steps, list_to_str_arr);
+	ft_lstiter(steps, convert_list_to_array);
 	*success = true;
 	return (steps);
 }

@@ -13,7 +13,7 @@
 
 #include "minishell.h"
 
-void	remove_env_var(t_shell *shell, char **env_copy, char *to_look)
+void	erase_environment_entry(t_shell *shell, char **env_copy, char *to_look)
 {
 	size_t	i;
 	size_t	j;
@@ -25,11 +25,11 @@ void	remove_env_var(t_shell *shell, char **env_copy, char *to_look)
 		if (ft_strncmp(shell->env[i], to_look, ft_strlen(to_look)) != 0)
 			env_copy[j++] = shell->env[i++];
 		else
-			ft_free(&shell->env[i++]);
+			deallocate_memory(&shell->env[i++]);
 	}
 }
 
-void	remove_declared_env_var(t_shell *shell, char **env_copy, char *to_look)
+void	erase_declared_entry(t_shell *shell, char **env_copy, char *to_look)
 {
 	size_t	i;
 	size_t	j;
@@ -42,6 +42,6 @@ void	remove_declared_env_var(t_shell *shell, char **env_copy, char *to_look)
 				ft_strlen(to_look)) != 0)
 			env_copy[j++] = shell->declared_env[i++];
 		else
-			ft_free(&shell->declared_env[i++]);
+			deallocate_memory(&shell->declared_env[i++]);
 	}
 }

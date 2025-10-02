@@ -31,20 +31,20 @@ struct	s_exec_step
 	bool	or_next;
 };
 
-t_list		*parse_tokens(t_list *tokens, bool *success);
-void		free_exec_step(void *exec_step_ptr);
-void		free_redir(void *redir_ptr);
-void		print_exec_step(t_list *exec_steps);
-void		list_to_str_arr(void *step_ptr);
-bool		is_terminator(const t_token *token);
-bool		is_redirection(const t_token *token);
-bool		check_for_errors(t_list *tokens);
-bool		parsing_error(t_redir *redir, t_exec_step *step);
-bool		check_next_subexpr_token(t_list *tokens, t_token **token,
+t_list		*analyze_token_stream(t_list *tokens, bool *success);
+void		release_execution_step(void *exec_step_ptr);
+void		release_redirection(void *redir_ptr);
+void		display_execution_step(t_list *exec_steps);
+void		convert_list_to_array(void *step_ptr);
+bool		check_token_terminator(const t_token *token);
+bool		check_token_redirection(const t_token *token);
+bool		detect_parsing_errors(t_list *tokens);
+bool		report_parsing_error(t_redir *redir, t_exec_step *step);
+bool		validate_subexpression_token(t_list *tokens, t_token **token,
 				t_exec_step *step, bool *success);
-bool		check_next_token(t_list *cmd_end, t_token **token,
+bool		validate_following_token(t_list *cmd_end, t_token **token,
 				t_exec_step *step, t_list *tokens);
-t_list		*parse_step(t_list **tokens, t_token **token, t_list **steps,
+t_list		*process_parsing_step(t_list **tokens, t_token **token, t_list **steps,
 				bool *success);
 
 #endif

@@ -25,7 +25,7 @@ static int	is_env_var(const char *str, size_t *i)
 	return (-1);
 }
 
-bool	contains_env_var(const char *str)
+bool	check_environment_variable(const char *str)
 {
 	size_t	i;
 	bool	in_s_quotes;
@@ -37,7 +37,7 @@ bool	contains_env_var(const char *str)
 	in_d_quotes = false;
 	while (str[i] != '\0')
 	{
-		set_in_quotes(str, i, &in_s_quotes, &in_d_quotes);
+		track_quote_state(str, i, &in_s_quotes, &in_d_quotes);
 		if (str[i] == '$' && in_s_quotes == false)
 		{
 			i++;

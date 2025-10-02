@@ -1,17 +1,17 @@
 
 #include "minishell.h"
 
-void	free_redir(void *redir_ptr)
+void	release_redirection(void *redir_ptr)
 {
 	t_redir	*redir;
 
 	redir = redir_ptr;
-	ft_free(&redir->file);
-	ft_free(&redir->limiter);
-	ft_free(&redir);
+	deallocate_memory(&redir->file);
+	deallocate_memory(&redir->limiter);
+	deallocate_memory(&redir);
 }
 
-void	free_exec_step(void *exec_step_ptr)
+void	release_execution_step(void *exec_step_ptr)
 {
 	t_exec_step	*exec_step;
 	size_t		i;
@@ -19,22 +19,22 @@ void	free_exec_step(void *exec_step_ptr)
 	exec_step = exec_step_ptr;
 	if (exec_step->cmd != NULL)
 	{
-		ft_lstclear(&exec_step->cmd->redirs, free_redir);
+		ft_lstclear(&exec_step->cmd->redirs, release_redirection);
 		ft_lstclear(&exec_step->cmd->args, free);
 		i = 0;
 		while (exec_step->cmd->arg_arr && exec_step->cmd->arg_arr[i] != NULL)
 		{
-			ft_free(&exec_step->cmd->arg_arr[i]);
+			deallocate_memory(&exec_step->cmd->arg_arr[i]);
 			i++;
 		}
-		ft_free(&exec_step->cmd->arg_arr);
-		ft_free(&exec_step->cmd);
+		deallocate_memory(&exec_step->cmd->arg_arr);
+		deallocate_memory(&exec_step->cmd);
 	}
-	ft_free(&exec_step->subexpr_line);
-	ft_free(&exec_step);
+	deallocate_memory(&exec_step->subexpr_line);
+	deallocate_memory(&exec_step);
 }
 
-void	list_to_str_arr(void *step_ptr)
+void	convert_list_to_array(void *step_ptr)
 {
 	t_list		*arg_list;
 	size_t		i;
@@ -62,7 +62,7 @@ void	list_to_str_arr(void *step_ptr)
 	step->cmd->arg_arr[i] = NULL;
 }
 
-bool	is_terminator(const t_token *token)
+bool	check_token_terminator(const t_token *token)
 {
 	if (token->type == PIPE
 		|| token->type == AND
@@ -71,7 +71,7 @@ bool	is_terminator(const t_token *token)
 	return (false);
 }
 
-bool	is_redirection(const t_token *token)
+bool	check_token_redirection(const t_token *token)
 {
 	if (token->type == INPUT_REDIR || token->type == OUTPUT_REDIR
 		|| token->type == APPEND || token->type == HEREDOC)

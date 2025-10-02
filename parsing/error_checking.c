@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-bool	check_for_errors(t_list *tokens)
+bool	detect_parsing_errors(t_list *tokens)
 {
 	t_token	*tkn;
 	t_token	*next_token;
@@ -9,20 +9,20 @@ bool	check_for_errors(t_list *tokens)
 	if (tokens == NULL)
 		return (true);
 	tkn = tokens->content;
-	if (is_terminator(tkn) || (ft_lstsize(tokens) == 1 && is_redirection(tkn))
-		|| (is_terminator(ft_lstlast(tokens)->content) == true))
+	if (check_token_terminator(tkn) || (ft_lstsize(tokens) == 1 && check_token_redirection(tkn))
+		|| (check_token_terminator(ft_lstlast(tokens)->content) == true))
 		return (false);
 	while (tokens->next != NULL)
 	{
 		tkn = tokens->content;
 		next_token = tokens->next->content;
-		if (((is_terminator(tkn) && is_terminator(next_token)))
-			|| (is_redirection(tkn) && is_redirection(next_token))
-			|| (is_redirection(tkn) && is_terminator(next_token))
-			|| (is_redirection(tkn) && next_token->expanded == true
+		if (((check_token_terminator(tkn) && check_token_terminator(next_token)))
+			|| (check_token_redirection(tkn) && check_token_redirection(next_token))
+			|| (check_token_redirection(tkn) && check_token_terminator(next_token))
+			|| (check_token_redirection(tkn) && next_token->expanded == true
 				&& (tkn->type == OUTPUT_REDIR || tkn->type == APPEND))
-			|| (is_redirection(tkn) && next_token->type == SUB_EXPR)
-			|| (tkn->type == SUB_EXPR && is_redirection(next_token))
+			|| (check_token_redirection(tkn) && next_token->type == SUB_EXPR)
+			|| (tkn->type == SUB_EXPR && check_token_redirection(next_token))
 			|| (tkn->type == PIPE && next_token->type == SUB_EXPR))
 			return (false);
 		tokens = tokens->next;
@@ -30,15 +30,15 @@ bool	check_for_errors(t_list *tokens)
 	return (true);
 }
 
-bool	parsing_error(t_redir *redir, t_exec_step *step)
+bool	report_parsing_error(t_redir *redir, t_exec_step *step)
 {
-	ft_free(&redir);
+	deallocate_memory(&redir);
 	ft_lstclear(&step->cmd->args, free);
-	ft_lstclear(&step->cmd->redirs, free_redir);
+	ft_lstclear(&step->cmd->redirs, release_redirection);
 	return (false);
 }
 
-bool	check_next_subexpr_token(t_list *tokens, t_token **token,
+bool	validate_subexpression_token(t_list *tokens, t_token **token,
 	t_exec_step *step, bool *success)
 {
 	if (tokens->next != NULL)
@@ -64,7 +64,7 @@ bool	check_next_subexpr_token(t_list *tokens, t_token **token,
 	return (true);
 }
 
-bool	check_next_token(t_list *cmd_end, t_token **token,
+bool	validate_following_token(t_list *cmd_end, t_token **token,
 	t_exec_step *step, t_list *tokens)
 {
 	if (cmd_end->next != NULL)

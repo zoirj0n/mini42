@@ -53,59 +53,59 @@ struct s_wildcard
 	bool	is_wildcard;
 };
 
-char		*eat_dollars(const char *str);
-t_list		*tokenize_line(const t_shell *shell, const char *line,
+char		*strip_dollar_signs(const char *str);
+t_list		*process_input_line(const t_shell *shell, const char *line,
 				bool *success);
-t_list		*tokenize_env_var_str(const char *line, bool *success);
-t_list		*tokenize_env_variable(const t_shell *shell, const char *line,
+t_list		*process_environment_string(const char *line, bool *success);
+t_list		*extract_environment_variable(const t_shell *shell, const char *line,
 				size_t *idx);
-void		print_tokens_detailed(t_list *tokens);
-char		*strjoin_free(char *s1, char *s2, int f);
-char		*substr_free(char *s, unsigned int start, size_t len);
-bool		contains_env_var(const char *str);
-char		*expand_env_var(const t_shell *shell, char *str);
-void		ft_free(void *memory);
-t_list		*tokenize_operator(const char *line, size_t *idx,
+void		display_token_details(t_list *tokens);
+char		*join_and_free_strings(char *s1, char *s2, int f);
+char		*extract_and_free_substring(char *s, unsigned int start, size_t len);
+bool		check_environment_variable(const char *str);
+char		*resolve_environment_variable(const t_shell *shell, char *str);
+void		deallocate_memory(void *memory);
+t_list		*create_operator_token(const char *line, size_t *idx,
 				const t_token_type type);
-t_list		*tokenize_subexpr(const t_shell *shell, const char *line,
+t_list		*create_subexpression_token(const t_shell *shell, const char *line,
 				size_t *idx);
-char		*expand_wildcard(char *token);
-t_wildcard	**split_wildcard(const char *wc);
-void		free_token(void *mem);
-void		free_split_array(char **split);
-t_list		*tokenize_single_quote(const t_shell *shell, const char *line,
+char		*apply_wildcard_expansion(char *token);
+t_wildcard	**parse_wildcard_pattern(const char *wc);
+void		release_token_memory(void *mem);
+void		release_string_array(char **split);
+t_list		*create_single_quote_token(const t_shell *shell, const char *line,
 				size_t *idx);
-t_list		*tokenize_double_quote(const t_shell *shell, const char *line,
+t_list		*create_double_quote_token(const t_shell *shell, const char *line,
 				size_t *idx, const bool expand_var);
-void		print_tokens_detailed(t_list *tokens);
-void		print_tokens(t_list *tokens);
-char		*eat_quotes(const char *str);
-t_list		*tokenize_normal(const t_shell *shell, const char *line,
+void		display_token_details(t_list *tokens);
+void		display_token_list(t_list *tokens);
+char		*remove_quote_characters(const char *str);
+t_list		*create_normal_token(const t_shell *shell, const char *line,
 				size_t *idx, bool expand_var);
-void		set_in_quotes(const char *str, const size_t i, bool *in_single,
+void		track_quote_state(const char *str, const size_t i, bool *in_single,
 				bool *in_double);
-bool		match_str_on_wildcard(const char *str, t_wildcard **wc_segs);
-bool		is_operator(const char *line, const size_t i);
-t_list		*tokenize_operator_token(const char *line, size_t *i);
-void		*token_error(const char *msg, t_list **tokens, bool *success);
-bool		last_token_was_heredoc(t_list *tokens);
-bool		tokenize_wildcard(const t_shell *shell, t_list **el,
+bool		compare_string_with_wildcard(const char *str, t_wildcard **wc_segs);
+bool		detect_operator_character(const char *line, const size_t i);
+t_list		*process_operator_token(const char *line, size_t *i);
+void		*handle_token_error(const char *msg, t_list **tokens, bool *success);
+bool		check_previous_heredoc(t_list *tokens);
+bool		process_wildcard_token(const t_shell *shell, t_list **el,
 				t_list **tokens, bool *success);
-void		set_quotes(const char ch, char *quote, bool *in_quote);
-bool		check_for_token_errors(const char *line, bool *success);
-void		tokenize_env_cleanup(t_list **el,
+void		update_quote_state(const char ch, char *quote, bool *in_quote);
+bool		detect_token_syntax_errors(const char *line, bool *success);
+void		cleanup_environment_tokenization(t_list **el,
 				t_list **tokens, bool *success);
-bool		first_token_group(const t_shell *shell, const char *line,
+bool		process_primary_tokens(const t_shell *shell, const char *line,
 				size_t *i, t_list **tokens);
-bool		second_token_group(const t_shell *shell, const char *line,
+bool		process_secondary_tokens(const t_shell *shell, const char *line,
 				size_t *i, t_list **tokens);
-bool		tokenize_normal_and_wildcard(const t_shell *shell, const char *line,
+bool		process_text_and_wildcard(const t_shell *shell, const char *line,
 				size_t *i, t_list **tokens);
-bool		handle_quotes_count(const char *str, size_t *num_words, size_t *i);
-bool		handle_quotes_split(const char *wc, size_t *i, size_t *word_count,
+bool		count_quoted_words(const char *str, size_t *num_words, size_t *i);
+bool		split_quoted_wildcard(const char *wc, size_t *i, size_t *word_count,
 				t_wildcard **wc_split);
-char		*create_word(char const *str, const size_t word_start,
+char		*build_word_string(char const *str, const size_t word_start,
 				const size_t word_end);
-t_wildcard	*create_wc(char *str, bool is_wildcard);
+t_wildcard	*build_wildcard_segment(char *str, bool is_wildcard);
 
 #endif

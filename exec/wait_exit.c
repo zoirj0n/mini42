@@ -8,9 +8,9 @@ static t_list	*wait_cmds(t_list *steps, t_exec_flags *flags)
 	while (steps && flags->step_num_start < flags->step_num)
 	{
 		step = steps->content;
-		if (step->cmd->arg_arr[0] && !is_dir(step->cmd->arg_arr[0])
+		if (step->cmd->arg_arr[0] && !check_directory_status(step->cmd->arg_arr[0])
 			&& (access(step->cmd->arg_arr[0], X_OK) != -1
-				|| is_builtin(step)))
+				|| check_builtin_command(step)))
 		{
 			waitpid(step->cmd->pid, &flags->w_status, 0);
 		}
@@ -22,7 +22,7 @@ static t_list	*wait_cmds(t_list *steps, t_exec_flags *flags)
 	return (steps);
 }
 
-int	get_exit(t_list *exec_steps, t_exec_step *step, t_exec_flags *flags)
+int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step, t_exec_flags *flags)
 {
 	if (!flags->exit && !WIFEXITED(flags->w_status)
 		&& WIFSIGNALED(flags->w_status))
@@ -39,7 +39,7 @@ int	get_exit(t_list *exec_steps, t_exec_step *step, t_exec_flags *flags)
 	if (!flags->exit)
 	{
 		if (!(((t_exec_step *)exec_steps->content)->pipe_next == false
-				&& parent_builtin(exec_steps->content)))
+				&& requires_parent_execution(exec_steps->content)))
 		{
 			step->exit_code = WEXITSTATUS(flags->w_status);
 		}
@@ -47,7 +47,7 @@ int	get_exit(t_list *exec_steps, t_exec_step *step, t_exec_flags *flags)
 	return (step->exit_code);
 }
 
-t_list	*wait_and_get_exit(t_shell *shell, t_exec_step *step,
+t_list	*await_completion_and_get_status(t_shell *shell, t_exec_step *step,
 	t_list *exec_steps, t_exec_flags *flags)
 {
 	t_list	*steps;
@@ -55,9 +55,9 @@ t_list	*wait_and_get_exit(t_shell *shell, t_exec_step *step,
 
 	if (step->cmd)
 	{
-		steps = reset_to_step(exec_steps, flags->step_num_start);
+		steps = rewind_to_step(exec_steps, flags->step_num_start);
 		steps = wait_cmds(steps, flags);
-		shell->last_exit_code = get_exit(exec_steps, step, flags);
+		shell->last_exit_code = retrieve_exit_status(exec_steps, step, flags);
 	}
 	else
 	{

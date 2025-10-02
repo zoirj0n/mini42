@@ -11,7 +11,7 @@ void	ft_lstclear(t_list **lst, void (*del)(void *))
 	{
 		next_node = node->next;
 		(*del)(node->content);
-		ft_free(&node);
+		deallocate_memory(&node);
 		node = next_node;
 	}
 	*lst = NULL;

@@ -8,7 +8,7 @@ static void	skip_dollar(const char *str, char *trimmed, char *quote, size_t *i)
 	*trimmed = str[*i];
 }
 
-char	*eat_dollars(const char *str)
+char	*strip_dollar_signs(const char *str)
 {
 	size_t	i;
 	size_t	j;
@@ -25,7 +25,7 @@ char	*eat_dollars(const char *str)
 	in_quote = false;
 	while (str[i] != '\0')
 	{
-		set_quotes(str[i], &quote, &in_quote);
+		update_quote_state(str[i], &quote, &in_quote);
 		if (in_quote == true)
 			trimmed_str[j++] = str[i++];
 		else if (str[i] == '$' && (str[i + 1] == '\'' || str[i + 1] == '\"'))
@@ -33,6 +33,6 @@ char	*eat_dollars(const char *str)
 		else
 			trimmed_str[j++] = str[i++];
 	}
-	ft_free(&str);
+	deallocate_memory(&str);
 	return (trimmed_str);
 }

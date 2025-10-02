@@ -19,7 +19,7 @@ static int	count_quotes(const char *str)
 				i++;
 			if (str[i] == '\0')
 			{
-				ft_free(&str);
+				deallocate_memory(&str);
 				return (-1);
 			}
 			i++;
@@ -57,7 +57,7 @@ static void	skip_quotes(const char *str, char *trimmed_str)
 	}
 }
 
-char	*eat_quotes(const char *str)
+char	*remove_quote_characters(const char *str)
 {
 	char	*trimmed_str;
 
@@ -67,6 +67,6 @@ char	*eat_quotes(const char *str)
 	if (trimmed_str == NULL)
 		return (NULL);
 	skip_quotes(str, trimmed_str);
-	ft_free(&str);
+	deallocate_memory(&str);
 	return (trimmed_str);
 }

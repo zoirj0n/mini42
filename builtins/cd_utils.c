@@ -21,25 +21,25 @@
  * @param env
  * @param home
  */
-void	move_to_home(t_shell *shell, t_exec_step *step, char **env, char *home)
+void	navigate_to_home(t_shell *shell, t_exec_step *step, char **env, char *home)
 {
 	char	*oldpwd;
 
 	oldpwd = getcwd(NULL, 0);
 	if (!oldpwd)
 	{
-		oldpwd = get_env(shell, "PWD");
-		ft_free(&home);
+		oldpwd = retrieve_environment_variable(shell, "PWD");
+		deallocate_memory(&home);
 		return ;
 	}
 	if (!chdir(home) && ft_strlen(oldpwd))
 	{
-		find_and_update_pwd(env, shell);
-		find_and_update_oldpwd(shell, env, oldpwd);
+		refresh_current_working_directory(env, shell);
+		refresh_old_working_directory(shell, env, oldpwd);
 		step->exit_code = 0;
 	}
-	ft_free(&oldpwd);
-	ft_free(&home);
+	deallocate_memory(&oldpwd);
+	deallocate_memory(&home);
 }
 
 /**
@@ -49,7 +49,7 @@ void	move_to_home(t_shell *shell, t_exec_step *step, char **env, char *home)
  * @param env
  * @return size_t
  */
-size_t	env_len(char **env)
+size_t	calculate_environment_length(char **env)
 {
 	size_t	len;
 

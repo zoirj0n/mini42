@@ -55,7 +55,7 @@ void	check_valid_args(t_shell *shell, t_exec_step *step, int i, int *j)
  * @param shell
  * @param child
  */
-void	ft_exit(t_exec_step *step, t_shell *shell, bool child)
+void	terminate_shell(t_exec_step *step, t_shell *shell, bool child)
 {
 	int		i;
 	int		j;

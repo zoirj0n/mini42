@@ -21,7 +21,7 @@ static int	count_words(char const *str, char sep)
 	return (num_words);
 }
 
-static char	*create_word(char const *str, int word_start, int word_end)
+static char	*build_word_string(char const *str, int word_start, int word_end)
 {
 	char	*word;
 
@@ -53,7 +53,7 @@ char	**ft_split(char const *s, char c)
 		word_start = i;
 		while (s[i] != c && s[i] != '\0')
 			i++;
-		words[word_count] = create_word(s, word_start, i - 1);
+		words[word_count] = build_word_string(s, word_start, i - 1);
 		if (words[word_count++] == NULL)
 			return (NULL);
 	}

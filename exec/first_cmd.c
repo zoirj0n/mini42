@@ -3,18 +3,18 @@
 
 static int	*run_parent_builtin(t_exec_step *step, t_shell *shell, int *fd)
 {
-	run_builtin(step, shell, false);
-	if (ft_strcmp(step->cmd->arg_arr[0], "exit") == 0)
+	execute_builtin_command(step, shell, false);
+	if (compare_strings(step->cmd->arg_arr[0], "exit") == 0)
 	{
 		if (step->cmd->arg_arr)
 		{
-			ft_lstclear(&shell->tokens, free_token);
-			free_steps(&shell->steps_to_free);
-			free_split_array(shell->env);
-			free_split_array(shell->declared_env);
+			ft_lstclear(&shell->tokens, release_token_memory);
+			release_execution_steps(&shell->steps_to_free);
+			release_string_array(shell->env);
+			release_string_array(shell->declared_env);
 			ft_lstclear(&shell->heredoc_contents, free);
-			ft_close(&g_dupstdin);
-			ft_free(&fd);
+			close_descriptor(&g_dupstdin);
+			deallocate_memory(&fd);
 		}
 		exit(shell->last_exit_code);
 	}
@@ -26,12 +26,12 @@ static void	dup_pipe_fds(t_redir *inredir, int *heredoc_fds, t_exec_step *step,
 {
 	if (inredir && inredir->type == HEREDOC)
 	{
-		ft_close(&heredoc_fds[1]);
+		close_descriptor(&heredoc_fds[1]);
 		dup2(heredoc_fds[0], 0);
 	}
 	if (step->pipe_next)
 	{
-		ft_close(&fd[0]);
+		close_descriptor(&fd[0]);
 		dup2(fd[1], 1);
 	}
 }
@@ -44,16 +44,16 @@ static void	dup_redir_fds(int in_fd, int out_fd)
 		dup2(out_fd, 1);
 }
 
-int	*first_cmd(t_exec_step *step, int *fds, t_shell *shell, int out_fd)
+int	*execute_initial_command(t_exec_step *step, int *fds, t_shell *shell, int out_fd)
 {
 	int			in_fd;
 	int			heredoc_fds[2];
 	int			exit_code;
 	t_redir		*inredir;
 
-	in_fd = cmd_init(shell, &inredir, step, heredoc_fds);
-	pipe_fds(step, fds);
-	if (parent_builtin(step) && !step->pipe_next)
+	in_fd = initialize_command_execution_context(shell, &inredir, step, heredoc_fds);
+	setup_pipe_descriptors(step, fds);
+	if (requires_parent_execution(step) && !step->pipe_next)
 		return (run_parent_builtin(step, shell, fds));
 	if (step->cmd->arg_arr[0] != NULL)
 		step->cmd->pid = fork();
@@ -61,14 +61,14 @@ int	*first_cmd(t_exec_step *step, int *fds, t_shell *shell, int out_fd)
 	{
 		dup_pipe_fds(inredir, heredoc_fds, step, fds);
 		dup_redir_fds(in_fd, out_fd);
-		if (is_builtin(step))
+		if (check_builtin_command(step))
 		{
-			exit_code = run_child_builtin(shell, step, fds, heredoc_fds);
-			ft_close(&out_fd);
-			ft_close(&in_fd);
+			exit_code = execute_builtin_in_child(shell, step, fds, heredoc_fds);
+			close_descriptor(&out_fd);
+			close_descriptor(&in_fd);
 			exit(exit_code);
 		}
 		execve(step->cmd->arg_arr[0], step->cmd->arg_arr, shell->env);
 	}
-	return (cmd_cleanup(fds, &in_fd, &out_fd, heredoc_fds));
+	return (cleanup_command_resources(fds, &in_fd, &out_fd, heredoc_fds));
 }

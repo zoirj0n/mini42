@@ -10,17 +10,17 @@ t_redir	*create_redir(t_token **token, t_list **start, t_exec_step *step)
 	*start = (*start)->next;
 	if (*start == NULL || redir == NULL)
 	{
-		ft_free(&redir);
+		deallocate_memory(&redir);
 		ft_lstclear(&step->cmd->args, free);
-		ft_lstclear(&step->cmd->redirs, free_redir);
+		ft_lstclear(&step->cmd->redirs, release_redirection);
 		return (NULL);
 	}
 	*token = (*start)->content;
-	if (is_redirection(*token) == true)
+	if (check_token_redirection(*token) == true)
 	{
-		ft_free(&redir);
+		deallocate_memory(&redir);
 		ft_lstclear(&step->cmd->args, free);
-		ft_lstclear(&step->cmd->redirs, free_redir);
+		ft_lstclear(&step->cmd->redirs, release_redirection);
 		return (NULL);
 	}
 	if (redir->type != HEREDOC)
@@ -39,7 +39,7 @@ static bool	fill_exec_step(t_exec_step *step, t_list *start, const t_list *end)
 	while (start != NULL && start != end->next)
 	{
 		tkn = start->content;
-		if (is_redirection(tkn) == true)
+		if (check_token_redirection(tkn) == true)
 		{
 			redir = create_redir(&tkn, &start, step);
 			if (redir == NULL)
@@ -50,7 +50,7 @@ static bool	fill_exec_step(t_exec_step *step, t_list *start, const t_list *end)
 			|| tkn->type == QUOTED_STRING || tkn->type == NORMAL)
 			ft_lstadd_back(&step->cmd->args, ft_lstnew(ft_strdup(tkn->substr)));
 		else if (tkn->type == SUB_EXPR)
-			return (parsing_error(redir, step));
+			return (report_parsing_error(redir, step));
 		start = start->next;
 	}
 	return (true);
@@ -69,16 +69,16 @@ static t_exec_step	*create_step(t_list *cmd_start, t_list *cmd_end,
 		return (NULL);
 	if (fill_exec_step(step, cmd_start, cmd_end) == false)
 	{
-		ft_free(&step->cmd);
-		ft_free(&step);
+		deallocate_memory(&step->cmd);
+		deallocate_memory(&step);
 		return (NULL);
 	}
-	if (check_next_token(cmd_end, token, step, tokens) == false)
+	if (validate_following_token(cmd_end, token, step, tokens) == false)
 		return (NULL);
 	return (step);
 }
 
-t_list	*parse_step(t_list **tokens, t_token **token, t_list **steps,
+t_list	*process_parsing_step(t_list **tokens, t_token **token, t_list **steps,
 	bool *success)
 {
 	t_list		*cmd_start;
@@ -86,7 +86,7 @@ t_list	*parse_step(t_list **tokens, t_token **token, t_list **steps,
 
 	cmd_start = *tokens;
 	while ((*tokens)->next != NULL
-		&& is_terminator((*tokens)->next->content) == false)
+		&& check_token_terminator((*tokens)->next->content) == false)
 	{
 		*token = (*tokens)->content;
 		if ((*token)->type == SUB_EXPR)

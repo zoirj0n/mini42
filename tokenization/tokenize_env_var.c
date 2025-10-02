@@ -1,20 +1,20 @@
 
 #include "minishell.h"
 
-bool	retokenize_env_var(t_token *token, t_list **el, t_list **tokens)
+bool	reprocess_environment_token(t_token *token, t_list **el, t_list **tokens)
 {
 	char	*substr_copy;
 	bool	success;
 
 	substr_copy = ft_strdup(token->substr);
-	ft_lstclear(el, free_token);
-	*el = tokenize_env_var_str(substr_copy, &success);
-	ft_free(&substr_copy);
+	ft_lstclear(el, release_token_memory);
+	*el = process_environment_string(substr_copy, &success);
+	deallocate_memory(&substr_copy);
 	ft_lstadd_back(tokens, *el);
 	return (success);
 }
 
-void	set_quotes(const char ch, char *quote, bool *in_quote)
+void	update_quote_state(const char ch, char *quote, bool *in_quote)
 {
 	if (ch == '\'' || ch == '\"')
 	{
@@ -43,7 +43,7 @@ static char	*get_env_string(const char *line, size_t *idx)
 	quote = '\0';
 	while (line[i] != '\0')
 	{
-		set_quotes(line[i], &quote, &in_quote);
+		update_quote_state(line[i], &quote, &in_quote);
 		if ((line[i] == ' ' || ft_strchr("<>|(&)", line[i])) && !in_quote)
 			break ;
 		i++;
@@ -58,7 +58,7 @@ static char	*get_env_string(const char *line, size_t *idx)
 	return (str);
 }
 
-t_list	*tokenize_env_variable(const t_shell *shell, const char *line,
+t_list	*extract_environment_variable(const t_shell *shell, const char *line,
 	size_t *idx)
 {
 	t_token	*tkn;
@@ -70,7 +70,7 @@ t_list	*tokenize_env_variable(const t_shell *shell, const char *line,
 	tkn->substr = get_env_string(line, idx);
 	if (tkn->substr == NULL)
 	{
-		ft_free(&tkn);
+		deallocate_memory(&tkn);
 		return (NULL);
 	}
 	if (ft_strncmp(tkn->substr, "$\"\"", ft_strlen(tkn->substr)) == 0
@@ -79,8 +79,8 @@ t_list	*tokenize_env_variable(const t_shell *shell, const char *line,
 		tkn->type = NORMAL;
 		return (ft_lstnew(tkn));
 	}
-	if (contains_env_var(tkn->substr))
-		tkn->substr = expand_env_var(shell, tkn->substr);
+	if (check_environment_variable(tkn->substr))
+		tkn->substr = resolve_environment_variable(shell, tkn->substr);
 	tkn->type = NORMAL;
 	return (ft_lstnew(tkn));
 }

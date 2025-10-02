@@ -10,7 +10,7 @@ extern int	g_dupstdin;
  * @param in_redir
  * @return t_redir*
  */
-t_redir	*last_inredir(t_list *in_redir)
+t_redir	*retrieve_last_input_redirect(t_list *in_redir)
 {
 	t_redir	*last;
 	t_redir	*current_redir;
@@ -37,7 +37,7 @@ t_redir	*last_inredir(t_list *in_redir)
  */
 static bool	create_redir_file(t_redir *redir_file, int *out_fd)
 {
-	ft_close(out_fd);
+	close_descriptor(out_fd);
 	if (redir_file->type == APPEND)
 		*out_fd = open(redir_file->file,
 				O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -74,12 +74,12 @@ static int	exec_outredir(t_exec_step *step)
 	while (redir)
 	{
 		redir_file = redir->content;
-		check = check_access_for_redir(redir_file, &redir);
+		check = verify_redirection_access(redir_file, &redir);
 		if (check == 1)
 			break ;
 		else if (check == 2)
 			continue ;
-		if (check_redir_file_exist(redir_file, &out_fd) == false)
+		if (confirm_redirection_file_exists(redir_file, &out_fd) == false)
 			return (out_fd);
 		else
 			if (create_redir_file(redir_file, &out_fd) == false)
@@ -89,12 +89,12 @@ static int	exec_outredir(t_exec_step *step)
 	return (out_fd);
 }
 
-bool	open_redirs(t_shell *shell, t_exec_step *step,
+bool	configure_redirections(t_shell *shell, t_exec_step *step,
 	bool *exit_flag, int *out_fd)
 {
 	bool	valid_redirs;
 
-	valid_redirs = check_valid_redir(step);
+	valid_redirs = validate_redirection_files(step);
 	if (valid_redirs == false)
 	{
 		*exit_flag = true;

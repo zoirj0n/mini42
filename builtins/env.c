@@ -20,7 +20,7 @@
  * @param shell
  * @param step
  */
-void	ft_env(t_shell *shell, t_exec_step *step)
+void	show_environment_variables(t_shell *shell, t_exec_step *step)
 {
 	size_t	i;
 

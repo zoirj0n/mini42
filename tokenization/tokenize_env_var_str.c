@@ -23,7 +23,7 @@ static	t_list	*tokenize_inside_envvar(const char *line,
 	return (el);
 }
 
-t_list	*tokenize_env_var_str(const char *line,
+t_list	*process_environment_string(const char *line,
 	bool *success)
 {
 	size_t	i;

@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 void rl_replace_line(const char *text,int clear_undo);
-int g_dupstdin;
+extern int g_dupstdin;
 
 typedef struct s_shell t_shell;
 struct s_shell
@@ -34,19 +34,19 @@ struct s_shell
 	t_list *heredoc_contents;
 };
 
-bool check_subexprs(t_shell *shell, t_list *shell_steps);
-void ft_close(int *fd);
-char **copy_str_arr(char **arr);
-void free_steps(t_list **step_lists);
-void sigint_interactive(int sig);
-void sigint_command(int sig);
-void sigquit_command(int sig);
-void hd_sig_handler(int sig);
-char *get_env(const t_shell *shell, const char *name);
-bool retokenize_env_var(
+bool validate_subexpressions(t_shell *shell, t_list *shell_steps);
+void close_descriptor(int *fd);
+char **duplicate_string_array(char **arr);
+void release_execution_steps(t_list **step_lists);
+void handle_interrupt_interactive(int sig);
+void handle_interrupt_command(int sig);
+void handle_quit_command(int sig);
+void handle_heredoc_signal(int sig);
+char *retrieve_environment_variable(const t_shell *shell, const char *name);
+bool reprocess_environment_token(
 	t_token *token, t_list **el, t_list **tokens);
-char *minishell_readline(t_shell *shell);
-void minishell_run_heredocs(t_shell *shell);
-void minishell_exec_and_cleanup(t_shell *shell, char *line);
+char *read_command_line(t_shell *shell);
+void process_heredoc_inputs(t_shell *shell);
+void execute_and_cleanup_shell(t_shell *shell, char *line);
 
 #endif

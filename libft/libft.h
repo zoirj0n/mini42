@@ -10,7 +10,7 @@
 
 # define SIZET_MAX 18446744073709551615UL
 
-void	ft_free(void *memory);
+void	deallocate_memory(void *memory);
 int		ft_isalpha(int c);
 int		ft_isdigit(int c);
 int		ft_isalnum(int c);

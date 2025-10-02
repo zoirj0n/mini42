@@ -59,7 +59,7 @@ static int terminating_charseq(const char *str, size_t *wc_i, size_t *i,
 	return (CONTINUE);
 }
 
-bool match_str_on_wildcard(const char *str, t_wildcard **wc_segs)
+bool compare_string_with_wildcard(const char *str, t_wildcard **wc_segs)
 {
 	size_t i;
 	size_t wc_i;

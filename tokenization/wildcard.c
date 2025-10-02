@@ -13,16 +13,16 @@ static char *get_dir_contents(void)
 	if (cwd == NULL)
 		return (ft_strdup(""));
 	dp = opendir(cwd);
-	ft_free(&cwd);
+	deallocate_memory(&cwd);
 	if (dp == NULL)
 		return (ft_strdup(""));
 	dirp = readdir(dp);
 	while (dirp != NULL)
 	{
 		if (dirp->d_name[0] != '.' && contents[0] != '\0')
-			contents = strjoin_free(contents, "\n", 1);
+			contents = join_and_free_strings(contents, "\n", 1);
 		if (dirp->d_name[0] != '.')
-			contents = strjoin_free(contents, dirp->d_name, 1);
+			contents = join_and_free_strings(contents, dirp->d_name, 1);
 		dirp = readdir(dp);
 	}
 	closedir(dp);
@@ -38,7 +38,7 @@ static char *single_wildcard(char *token)
 		res = ft_strdup(token);
 	while (ft_strchr(res, '\n') != NULL)
 		ft_strchr(res, '\n')[0] = ' ';
-	ft_free(&token);
+	deallocate_memory(&token);
 	return (res);
 }
 
@@ -49,21 +49,21 @@ static char *expand_wildcard_cleanup(char *res, char *token,
 
 	if (ft_strlen(res) == 0)
 	{
-		ft_free(&res);
+		deallocate_memory(&res);
 		res = ft_strdup(token);
 	}
-	ft_free(&token);
+	deallocate_memory(&token);
 	i = 0;
 	while (split_wc[i] != NULL)
 	{
-		ft_free(&split_wc[i]->str);
-		ft_free(&split_wc[i]);
+		deallocate_memory(&split_wc[i]->str);
+		deallocate_memory(&split_wc[i]);
 		i++;
 	}
-	ft_free(&split_wc);
+	deallocate_memory(&split_wc);
 	(void)split_wc;
-	free_split_array(contents);
-	return (eat_quotes(res));
+	release_string_array(contents);
+	return (remove_quote_characters(res));
 }
 
 static bool check_for_wildcards(t_wildcard **wildcards)
@@ -82,7 +82,7 @@ static bool check_for_wildcards(t_wildcard **wildcards)
 	return (all_charseqs);
 }
 
-char *expand_wildcard(char *token)
+char *apply_wildcard_expansion(char *token)
 {
 	char **contents;
 	char *contents_str;
@@ -95,17 +95,17 @@ char *expand_wildcard(char *token)
 	res = ft_strdup("");
 	contents_str = get_dir_contents();
 	contents = ft_split(contents_str, '\n');
-	ft_free(&contents_str);
-	wildcards = split_wildcard(token);
+	deallocate_memory(&contents_str);
+	wildcards = parse_wildcard_pattern(token);
 	if (check_for_wildcards(wildcards) == true)
 		return (expand_wildcard_cleanup(res, token, wildcards, contents));
 	i = -1;
 	while (contents[++i] != NULL)
 	{
-		if (match_str_on_wildcard(contents[i], wildcards) == true && res[0] != '\0')
-			res = strjoin_free(res, " ", 1);
-		if (match_str_on_wildcard(contents[i], wildcards) == true)
-			res = strjoin_free(res, contents[i], 1);
+		if (compare_string_with_wildcard(contents[i], wildcards) == true && res[0] != '\0')
+			res = join_and_free_strings(res, " ", 1);
+		if (compare_string_with_wildcard(contents[i], wildcards) == true)
+			res = join_and_free_strings(res, contents[i], 1);
 	}
 	return (expand_wildcard_cleanup(res, token, wildcards, contents));
 }

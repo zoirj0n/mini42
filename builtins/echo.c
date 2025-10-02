@@ -65,7 +65,7 @@ void	write_echo_content(t_exec_step *step, int i)
  * @param step
  * @param shell
  */
-void	ft_echo(t_exec_step *step, t_shell *shell)
+void	display_echo_output(t_exec_step *step, t_shell *shell)
 {
 	int	i;
 	int	n;
