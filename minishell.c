@@ -6,7 +6,7 @@
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 16:39:34 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 16:39:35 by mdheen           ###   ########.fr       */
+/*   Updated: 2025/10/03 18:40:40 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,33 @@
 
 extern int	g_dupstdin;
 
+void	init_shell(t_shell *shell, char **env)
+{
+	char	*shelvl_env;
+	char	*shlvl_str;
+
+	shell->env = copy_str_arr(env);
+	shell->declared_env = NULL;
+	shell->steps_to_free = NULL;
+	unset_var(shell, "OLDPWD");
+	update_declared_env(shell, "OLDPWD");
+	shelvl_env = get_env(shell, "SHLVL");
+	shell->fd = ft_calloc(2, sizeof(int));
+	if (shell->fd == NULL)
+	{
+		free_split_array(shell->env);
+		ft_free(&shelvl_env);
+		exit(EXIT_FAILURE);
+	}
+	if (shelvl_env != NULL)
+	{
+		shlvl_str = strjoin_free("SHLVL=", ft_itoa(ft_atoi(shelvl_env) + 1), 2);
+		update_env(shell, shlvl_str);
+		ft_free(&shlvl_str);
+		ft_free(&shelvl_env);
+	}
+	shell->last_exit_code = 0;
+}
 char	*minishell_readline(t_shell *shell)
 {
 	char	*line;
