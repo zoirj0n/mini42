@@ -1,34 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcat.c                                       :+:      :+:    :+:   */
+/*   desable_c.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/03 16:53:43 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 16:53:44 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 10:27:02 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:55:23 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
+#include <termios.h>
 
-size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
+void	disable_echoctl(void)
 {
-	size_t	dest_len;
-	size_t	src_len;
-	size_t	i;
+	struct termios	term;
 
-	dest_len = ft_strlen(dst);
-	src_len = ft_strlen(src);
-	i = 0;
-	while (i < src_len && dstsize > i + dest_len + 1)
+	if (!isatty(STDIN_FILENO))
+		return ;
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
-		dst[dest_len + i] = src[i];
-		i++;
+		perror("tcgetattr");
+		return ;
 	}
-	if (dstsize != 0)
-		dst[dest_len + i] = '\0';
-	if (dstsize < dest_len)
-		dest_len = dstsize;
-	return (dest_len + src_len);
+	term.c_lflag &= ~ECHOCTL;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+	{
+		perror("tcsetattr");
+		return ;
+	}
 }

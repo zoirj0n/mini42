@@ -5,28 +5,27 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:03 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:03 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:02 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:02 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	reprocess_environment_token(t_token *token, t_list **el,
-		t_list **tokens)
+bool	retokenize_env_var(t_token *token, t_list **el, t_list **tokens)
 {
 	char	*substr_copy;
 	bool	success;
 
 	substr_copy = ft_strdup(token->substr);
-	ft_lstclear(el, release_token_memory);
-	*el = process_environment_string(substr_copy, &success);
-	deallocate_memory(&substr_copy);
+	ft_lstclear(el, free_token);
+	*el = tokenize_env_var_str(substr_copy, &success);
+	ft_free(&substr_copy);
 	ft_lstadd_back(tokens, *el);
 	return (success);
 }
 
-void	update_quote_state(const char ch, char *quote, bool *in_quote)
+void	set_quotes(const char ch, char *quote, bool *in_quote)
 {
 	if (ch == '\'' || ch == '\"')
 	{
@@ -55,7 +54,7 @@ static char	*get_env_string(const char *line, size_t *idx)
 	quote = '\0';
 	while (line[i] != '\0')
 	{
-		update_quote_state(line[i], &quote, &in_quote);
+		set_quotes(line[i], &quote, &in_quote);
 		if ((line[i] == ' ' || ft_strchr("<>|(&)", line[i])) && !in_quote)
 			break ;
 		i++;
@@ -70,7 +69,7 @@ static char	*get_env_string(const char *line, size_t *idx)
 	return (str);
 }
 
-t_list	*extract_environment_variable(const t_shell *shell, const char *line,
+t_list	*tokenize_env_variable(const t_shell *shell, const char *line,
 		size_t *idx)
 {
 	t_token	*tkn;
@@ -82,7 +81,7 @@ t_list	*extract_environment_variable(const t_shell *shell, const char *line,
 	tkn->substr = get_env_string(line, idx);
 	if (tkn->substr == NULL)
 	{
-		deallocate_memory(&tkn);
+		ft_free(&tkn);
 		return (NULL);
 	}
 	if (ft_strncmp(tkn->substr, "$\"\"", ft_strlen(tkn->substr)) == 0
@@ -91,8 +90,8 @@ t_list	*extract_environment_variable(const t_shell *shell, const char *line,
 		tkn->type = NORMAL;
 		return (ft_lstnew(tkn));
 	}
-	if (check_environment_variable(tkn->substr))
-		tkn->substr = resolve_environment_variable(shell, tkn->substr);
+	if (contains_env_var(tkn->substr))
+		tkn->substr = expand_env_var(shell, tkn->substr);
 	tkn->type = NORMAL;
 	return (ft_lstnew(tkn));
 }

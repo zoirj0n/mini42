@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:14 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:14 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:51 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:40:52 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	modify_environment_variable(t_shell *shell, const char *str)
+void	update_env(t_shell *shell, const char *str)
 {
 	size_t	i;
 	char	*key;
@@ -24,22 +24,21 @@ void	modify_environment_variable(t_shell *shell, const char *str)
 	while (str[i] != '=')
 		i++;
 	key = ft_substr(str, 0, i);
-	delete_declared_variable(shell, key);
+	unset_declared_var(shell, key);
 	val = ft_substr(str, i + 1, ft_strlen(str));
 	key_val = ft_strjoin(key, "=");
 	to_look = ft_strjoin(key, "=");
-	key_val = join_and_free_strings(key_val, val, 3);
+	key_val = strjoin_free(key_val, val, 3);
 	i = 0;
-	if (set_variable_value(shell, to_look, key, key_val) == false)
+	if (assign_val_to_env(shell, to_look, key, key_val) == false)
 		return ;
-	deallocate_memory(&to_look);
-	deallocate_memory(&key);
-	shell->env = resize_string_array(shell->env,
-			calculate_environment_length(shell->env) + 1);
-	shell->env[calculate_environment_length(shell->env)] = key_val;
+	ft_free(&to_look);
+	ft_free(&key);
+	shell->env = resize_str_arr(shell->env, env_len(shell->env) + 1);
+	shell->env[env_len(shell->env)] = key_val;
 }
 
-bool	validate_export_argument(const char *arg)
+bool	check_export_arg(const char *arg)
 {
 	size_t	i;
 
@@ -73,8 +72,8 @@ static void	export_no_args(t_shell *shell, t_exec_step *step)
 			j++;
 		key = ft_substr(shell->env[i], 0, j);
 		val = ft_substr(shell->env[i], j + 1, ft_strlen(shell->env[i]));
-		display_export_variables(&val, &key);
-		deallocate_memory(&key);
+		print_the_export_env(&val, &key);
+		ft_free(&key);
 		i++;
 	}
 	step->exit_code = 0;
@@ -87,7 +86,7 @@ static void	export_no_args(t_shell *shell, t_exec_step *step)
 	}
 }
 
-void	modify_declared_variable(t_shell *shell, char *str)
+void	update_declared_env(t_shell *shell, char *str)
 {
 	size_t	i;
 	char	*to_look;
@@ -98,11 +97,11 @@ void	modify_declared_variable(t_shell *shell, char *str)
 	{
 		if (ft_strncmp(shell->env[i], to_look, ft_strlen(to_look)) == 0)
 		{
-			deallocate_memory(&to_look);
+			ft_free(&to_look);
 			return ;
 		}
 	}
-	deallocate_memory(&to_look);
+	ft_free(&to_look);
 	if (shell->declared_env == NULL)
 	{
 		shell->declared_env = ft_calloc(2, sizeof(char *));
@@ -111,9 +110,9 @@ void	modify_declared_variable(t_shell *shell, char *str)
 		shell->declared_env[0] = ft_strdup(str);
 		return ;
 	}
-	shell->declared_env = resize_string_array(shell->declared_env,
-			calculate_environment_length(shell->declared_env) + 1);
-	shell->declared_env[calculate_environment_length(shell->declared_env)] = ft_strdup(str);
+	shell->declared_env = resize_str_arr(shell->declared_env,
+			env_len(shell->declared_env) + 1);
+	shell->declared_env[env_len(shell->declared_env)] = ft_strdup(str);
 }
 
 // // * Case 1: exported variable doesnt exist. Add new line
@@ -134,7 +133,7 @@ void	modify_declared_variable(t_shell *shell, char *str)
  * @param shell
  * @param step
  */
-void	export_environment_variable(t_shell *shell, t_exec_step *step)
+void	ft_export(t_shell *shell, t_exec_step *step)
 {
 	char	**args;
 	bool	error;
@@ -143,7 +142,7 @@ void	export_environment_variable(t_shell *shell, t_exec_step *step)
 	error = false;
 	if (args[1] == NULL)
 		export_no_args(shell, step);
-	process_export_arguments(args, shell, &error);
+	run_export_with_args(args, shell, &error);
 	if (error)
 		step->exit_code = 1;
 	else

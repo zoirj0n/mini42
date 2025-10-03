@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:18:59 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:00 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:36 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:40:37 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
  * @param shell
  * @param step
  */
-void	show_environment_variables(t_shell *shell, t_exec_step *step)
+void	ft_env(t_shell *shell, t_exec_step *step)
 {
 	size_t	i;
 

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:13 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:14 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:55:19 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:55:20 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 static bool	subexpr_parse_error(t_list *tokens, t_list *steps)
 {
 	if (tokens != NULL)
-		ft_lstclear(&tokens, release_token_memory);
+		ft_lstclear(&tokens, free_token);
 	if (steps != NULL)
-		ft_lstclear(&steps, release_execution_step);
+		ft_lstclear(&steps, free_exec_step);
 	return (false);
 }
 
-bool	validate_subexpressions(t_shell *shell, t_list *shell_steps)
+bool	check_subexprs(t_shell *shell, t_list *shell_steps)
 {
 	t_exec_step	*step;
 	t_list		*steps;
@@ -33,18 +33,17 @@ bool	validate_subexpressions(t_shell *shell, t_list *shell_steps)
 		step = shell_steps->content;
 		if (step->subexpr_line != NULL)
 		{
-			tokens = process_input_line(shell, step->subexpr_line, &success);
+			tokens = tokenize_line(shell, step->subexpr_line, &success);
 			if (success == false)
 				return (subexpr_parse_error(tokens, NULL));
-			steps = analyze_token_stream(tokens, &success);
-			ft_lstclear(&tokens, release_token_memory);
-			if (!steps || !success || validate_subexpressions(shell,
-					steps) == false)
+			steps = parse_tokens(tokens, &success);
+			ft_lstclear(&tokens, free_token);
+			if (!steps || !success || check_subexprs(shell, steps) == false)
 				return (subexpr_parse_error(NULL, steps));
 			step = steps->content;
 			if (step->subexpr_line != NULL && steps->next == NULL)
 				return (subexpr_parse_error(NULL, steps));
-			ft_lstclear(&steps, release_execution_step);
+			ft_lstclear(&steps, free_exec_step);
 		}
 		shell_steps = shell_steps->next;
 	}

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:56 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:58 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:39:25 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:39:27 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,24 @@
 
 // This is ft_strjoin but with an additional argument
 // to specify which input strings to free
-char	*join_and_free_strings(char *s1, char *s2, int f)
+char	*strjoin_free(char *s1, char *s2, int f)
 {
 	char	*joined;
 
 	joined = ft_strjoin(s1, s2);
 	if (f == 1)
-		deallocate_memory(&s1);
+		ft_free(&s1);
 	if (f == 2)
-		deallocate_memory(&s2);
+		ft_free(&s2);
 	if (f == 3)
 	{
-		deallocate_memory(&s1);
-		deallocate_memory(&s2);
+		ft_free(&s1);
+		ft_free(&s2);
 	}
 	return (joined);
 }
 
-char	*extract_and_free_substring(char *s, unsigned int start, size_t len)
+char	*substr_free(char *s, unsigned int start, size_t len)
 {
 	char	*substr;
 	size_t	substr_length;
@@ -55,11 +55,11 @@ char	*extract_and_free_substring(char *s, unsigned int start, size_t len)
 		i++;
 	}
 	substr[i] = '\0';
-	deallocate_memory(&s);
+	ft_free(&s);
 	return (substr);
 }
 
-char	**duplicate_string_array(char **arr)
+char	**copy_str_arr(char **arr)
 {
 	size_t	len;
 	size_t	i;
@@ -79,7 +79,7 @@ char	**duplicate_string_array(char **arr)
 	return (arr_cpy);
 }
 
-void	release_execution_steps(t_list **step_lists)
+void	free_steps(t_list **step_lists)
 {
 	t_list	*steps;
 	t_list	*temp;
@@ -88,14 +88,14 @@ void	release_execution_steps(t_list **step_lists)
 	{
 		steps = (*step_lists)->content;
 		temp = (*step_lists)->next;
-		ft_lstclear(&steps, release_execution_step);
-		deallocate_memory(step_lists);
+		ft_lstclear(&steps, free_exec_step);
+		ft_free(step_lists);
 		(*step_lists) = temp;
 	}
 	*step_lists = NULL;
 }
 
-char	*retrieve_environment_variable(const t_shell *shell, const char *name)
+char	*get_env(const t_shell *shell, const char *name)
 {
 	size_t	i;
 	char	**vars;
@@ -114,11 +114,11 @@ char	*retrieve_environment_variable(const t_shell *shell, const char *name)
 		look_for_len = ft_strlen(look_for);
 		if (ft_strncmp(vars[i], look_for, look_for_len) == 0)
 		{
-			deallocate_memory(&look_for);
+			ft_free(&look_for);
 			return (ft_substr(vars[i], look_for_len, ft_strlen(vars[i])
 					- look_for_len + 1));
 		}
-		deallocate_memory(&look_for);
+		ft_free(&look_for);
 		i++;
 	}
 	return (NULL);

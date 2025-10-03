@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:48 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:49 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:49:46 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:49:47 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,17 +70,17 @@ static void	reparse(t_shell *shell, char *current_line, int step_number)
 	t_list	*new_steps;
 	bool	success;
 
-	ft_lstclear(&shell->tokens, release_token_memory);
-	tokens = process_input_line(shell, current_line, &success);
-	new_steps = analyze_token_stream(tokens, &success);
+	ft_lstclear(&shell->tokens, free_token);
+	tokens = tokenize_line(shell, current_line, &success);
+	new_steps = parse_tokens(tokens, &success);
 	ft_lstadd_back(&shell->steps_to_free, ft_lstnew(new_steps));
 	shell->tokens = tokens;
 	shell->steps = new_steps;
-	execute_commands(shell, new_steps, step_number, current_line);
+	exec_cmds(shell, new_steps, step_number, current_line);
 }
 
-void	process_logical_operators(t_shell *shell, t_exec_step *step,
-		int step_number, t_list **steps)
+void	handle_and_or(t_shell *shell, t_exec_step *step, int step_number,
+		t_list **steps)
 {
 	if (step && step->and_next)
 		step_number = handle_and_next(shell, steps, step, step_number);

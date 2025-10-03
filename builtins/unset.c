@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:29 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:30 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:41:05 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:41:05 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static bool	check_unset_arg(const char *arg)
 	return (true);
 }
 
-void	delete_variable(t_shell *shell, const char *var)
+void	unset_var(t_shell *shell, const char *var)
 {
 	size_t	i;
 	bool	found;
@@ -52,18 +52,17 @@ void	delete_variable(t_shell *shell, const char *var)
 			found = true;
 	if (found == false)
 	{
-		deallocate_memory(&to_look);
+		ft_free(&to_look);
 		return ;
 	}
-	env_copy = ft_calloc(calculate_environment_length(shell->env),
-			sizeof(char *));
-	erase_environment_entry(shell, env_copy, to_look);
-	deallocate_memory(&shell->env);
-	deallocate_memory(&to_look);
+	env_copy = ft_calloc(env_len(shell->env), sizeof(char *));
+	remove_env_var(shell, env_copy, to_look);
+	ft_free(&shell->env);
+	ft_free(&to_look);
 	shell->env = env_copy;
 }
 
-void	delete_declared_variable(t_shell *shell, const char *var)
+void	unset_declared_var(t_shell *shell, const char *var)
 {
 	size_t	i;
 	bool	found;
@@ -81,18 +80,17 @@ void	delete_declared_variable(t_shell *shell, const char *var)
 			found = true;
 	if (found == false)
 	{
-		deallocate_memory(&to_look);
+		ft_free(&to_look);
 		return ;
 	}
-	env_copy = ft_calloc(calculate_environment_length(shell->declared_env),
-			sizeof(char *));
-	erase_declared_entry(shell, env_copy, to_look);
-	deallocate_memory(&shell->declared_env);
-	deallocate_memory(&to_look);
+	env_copy = ft_calloc(env_len(shell->declared_env), sizeof(char *));
+	remove_declared_env_var(shell, env_copy, to_look);
+	ft_free(&shell->declared_env);
+	ft_free(&to_look);
 	shell->declared_env = env_copy;
 }
 
-void	remove_environment_variable(t_shell *shell, t_exec_step *step)
+void	ft_unset(t_shell *shell, t_exec_step *step)
 {
 	size_t	i;
 	char	**args;
@@ -110,8 +108,8 @@ void	remove_environment_variable(t_shell *shell, t_exec_step *step)
 		}
 		else
 		{
-			delete_declared_variable(shell, args[i]);
-			delete_variable(shell, args[i]);
+			unset_declared_var(shell, args[i]);
+			unset_var(shell, args[i]);
 		}
 	}
 	if (error)

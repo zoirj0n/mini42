@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:26 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:26 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:51 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:51 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,16 @@ static char	*get_dir_contents(void)
 	if (cwd == NULL)
 		return (ft_strdup(""));
 	dp = opendir(cwd);
-	deallocate_memory(&cwd);
+	ft_free(&cwd);
 	if (dp == NULL)
 		return (ft_strdup(""));
 	dirp = readdir(dp);
 	while (dirp != NULL)
 	{
 		if (dirp->d_name[0] != '.' && contents[0] != '\0')
-			contents = join_and_free_strings(contents, "\n", 1);
+			contents = strjoin_free(contents, "\n", 1);
 		if (dirp->d_name[0] != '.')
-			contents = join_and_free_strings(contents, dirp->d_name, 1);
+			contents = strjoin_free(contents, dirp->d_name, 1);
 		dirp = readdir(dp);
 	}
 	closedir(dp);
@@ -49,7 +49,7 @@ static char	*single_wildcard(char *token)
 		res = ft_strdup(token);
 	while (ft_strchr(res, '\n') != NULL)
 		ft_strchr(res, '\n')[0] = ' ';
-	deallocate_memory(&token);
+	ft_free(&token);
 	return (res);
 }
 
@@ -60,21 +60,21 @@ static char	*expand_wildcard_cleanup(char *res, char *token,
 
 	if (ft_strlen(res) == 0)
 	{
-		deallocate_memory(&res);
+		ft_free(&res);
 		res = ft_strdup(token);
 	}
-	deallocate_memory(&token);
+	ft_free(&token);
 	i = 0;
 	while (split_wc[i] != NULL)
 	{
-		deallocate_memory(&split_wc[i]->str);
-		deallocate_memory(&split_wc[i]);
+		ft_free(&split_wc[i]->str);
+		ft_free(&split_wc[i]);
 		i++;
 	}
-	deallocate_memory(&split_wc);
+	ft_free(&split_wc);
 	(void)split_wc;
-	release_string_array(contents);
-	return (remove_quote_characters(res));
+	free_split_array(contents);
+	return (eat_quotes(res));
 }
 
 static bool	check_for_wildcards(t_wildcard **wildcards)
@@ -93,7 +93,7 @@ static bool	check_for_wildcards(t_wildcard **wildcards)
 	return (all_charseqs);
 }
 
-char	*apply_wildcard_expansion(char *token)
+char	*expand_wildcard(char *token)
 {
 	char		**contents;
 	char		*contents_str;
@@ -106,18 +106,18 @@ char	*apply_wildcard_expansion(char *token)
 	res = ft_strdup("");
 	contents_str = get_dir_contents();
 	contents = ft_split(contents_str, '\n');
-	deallocate_memory(&contents_str);
-	wildcards = parse_wildcard_pattern(token);
+	ft_free(&contents_str);
+	wildcards = split_wildcard(token);
 	if (check_for_wildcards(wildcards) == true)
 		return (expand_wildcard_cleanup(res, token, wildcards, contents));
 	i = -1;
 	while (contents[++i] != NULL)
 	{
-		if (compare_string_with_wildcard(contents[i], wildcards) == true
+		if (match_str_on_wildcard(contents[i], wildcards) == true
 			&& res[0] != '\0')
-			res = join_and_free_strings(res, " ", 1);
-		if (compare_string_with_wildcard(contents[i], wildcards) == true)
-			res = join_and_free_strings(res, contents[i], 1);
+			res = strjoin_free(res, " ", 1);
+		if (match_str_on_wildcard(contents[i], wildcards) == true)
+			res = strjoin_free(res, contents[i], 1);
 	}
 	return (expand_wildcard_cleanup(res, token, wildcards, contents));
 }

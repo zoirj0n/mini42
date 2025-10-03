@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:39 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:40 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:00 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:01 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	is_env_var(const char *str, size_t *i)
 	return (-1);
 }
 
-bool	check_environment_variable(const char *str)
+bool	contains_env_var(const char *str)
 {
 	size_t	i;
 	bool	in_s_quotes;
@@ -48,7 +48,7 @@ bool	check_environment_variable(const char *str)
 	in_d_quotes = false;
 	while (str[i] != '\0')
 	{
-		track_quote_state(str, i, &in_s_quotes, &in_d_quotes);
+		set_in_quotes(str, i, &in_s_quotes, &in_d_quotes);
 		if (str[i] == '$' && in_s_quotes == false)
 		{
 			i++;

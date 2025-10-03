@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:45 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:45 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:43 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:44 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	count_quotes(const char *str)
 				i++;
 			if (str[i] == '\0')
 			{
-				deallocate_memory(&str);
+				ft_free(&str);
 				return (-1);
 			}
 			i++;
@@ -68,7 +68,7 @@ static void	skip_quotes(const char *str, char *trimmed_str)
 	}
 }
 
-char	*remove_quote_characters(const char *str)
+char	*eat_quotes(const char *str)
 {
 	char	*trimmed_str;
 
@@ -78,6 +78,6 @@ char	*remove_quote_characters(const char *str)
 	if (trimmed_str == NULL)
 		return (NULL);
 	skip_quotes(str, trimmed_str);
-	deallocate_memory(&str);
+	ft_free(&str);
 	return (trimmed_str);
 }

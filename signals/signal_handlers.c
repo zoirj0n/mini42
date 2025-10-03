@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:31 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:31 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:55:50 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:55:51 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	handle_interrupt_interactive(int sig)
+void	sigint_interactive(int sig)
 {
 	int	ret;
 
@@ -23,11 +23,11 @@ void	handle_interrupt_interactive(int sig)
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
-		close_descriptor(&g_dupstdin);
+		ft_close(&g_dupstdin);
 	}
 }
 
-void	handle_interrupt_command(int sig)
+void	sigint_command(int sig)
 {
 	int	ret;
 
@@ -44,18 +44,18 @@ void	handle_interrupt_command(int sig)
 	}
 }
 
-void	handle_quit_command(int sig)
+void	sigquit_command(int sig)
 {
 	if (sig == SIGQUIT)
 	{
 	}
 }
 
-void	handle_heredoc_signal(int sig)
+void	hd_sig_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		close_descriptor(&g_dupstdin);
+		ft_close(&g_dupstdin);
 		get_next_line(-1);
 		rl_on_new_line();
 		printf("\n");

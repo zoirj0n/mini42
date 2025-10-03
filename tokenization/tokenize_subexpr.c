@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:20 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:20 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:19 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:19 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	*parse_error(const char *msg, t_token *tkn)
 {
-	release_token_memory(tkn);
+	free_token(tkn);
 	if (msg != NULL)
 		ft_stderr(msg);
 	return (NULL);
@@ -30,7 +30,7 @@ static t_list	*tokenize_subexpr_helper(const t_shell *shell, t_token *tkn,
 	if (tkn->substr == NULL)
 		return (NULL);
 	success = true;
-	tkn->sub_tokens = process_input_line(shell, tkn->substr, &success);
+	tkn->sub_tokens = tokenize_line(shell, tkn->substr, &success);
 	if (success == false)
 		return (NULL);
 	el = ft_lstnew(tkn);
@@ -38,8 +38,7 @@ static t_list	*tokenize_subexpr_helper(const t_shell *shell, t_token *tkn,
 	return (el);
 }
 
-t_list	*create_subexpression_token(const t_shell *shell, const char *line,
-		size_t *idx)
+t_list	*tokenize_subexpr(const t_shell *shell, const char *line, size_t *idx)
 {
 	size_t	i;
 	t_token	*token;

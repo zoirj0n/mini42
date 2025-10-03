@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:23:44 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:23:44 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:54:23 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:54:57 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 # define SIZET_MAX 18446744073709551615UL
 
-void				deallocate_memory(void *memory);
+void				ft_free(void *memory);
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);
 int					ft_isalnum(int c);

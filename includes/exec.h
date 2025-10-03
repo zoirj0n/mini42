@@ -8,92 +8,106 @@
 # define BREAK -1
 # define PASS 0
 
-struct	s_exec_flags
+struct						s_exec_flags
 {
-	bool	first_flag;
-	bool	exit;
-	bool	valid_redirs;
-	int		w_status;
-	int		action;
-	int		step_num_start;
-	int		step_num;
+	bool					first_flag;
+	bool					exit;
+	bool					valid_redirs;
+	int						w_status;
+	int						action;
+	int						step_num_start;
+	int						step_num;
 };
 
 typedef struct s_exec_flags	t_exec_flags;
 
-bool		execute_subexpression(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
-				t_list **steps);
-void		configure_command_path(t_shell *shell, t_exec_step *step);
-t_list		*rewind_to_step(t_list *exec_steps, int step_number_start);
-void		initialize_command_execution(t_shell *shell, int *out_fd, t_exec_flags *flags,
-				int step_number);
-t_list		*navigate_to_step(t_exec_flags *flags, t_list *exec_steps,
-				t_exec_step **step);
+bool						exec_subexpr(t_shell *shell, t_exec_step *step,
+								t_exec_flags *flags, t_list **steps);
+void						set_cmd_path(t_shell *shell, t_exec_step *step);
+t_list						*reset_to_step(t_list *exec_steps,
+								int step_number_start);
+void						init_exec_cmds(t_shell *shell, int *out_fd,
+								t_exec_flags *flags, int step_number);
+t_list						*go_to_step(t_exec_flags *flags, t_list *exec_steps,
+								t_exec_step **step);
 
 /* ----- EXECUTE THE COMMANDS ----- */
-void		execute_commands(t_shell *shell, t_list *exec_steps, int step_number,
-				char *current_line);
+void						exec_cmds(t_shell *shell, t_list *exec_steps,
+								int step_number, char *current_line);
 
 /* ----- FUNCTION CALLS TO RUN THE COMMANDS ----- */
-int			*execute_initial_command(t_exec_step *step, int *fd, t_shell *shell, int out_fd);
-int			*execute_pipeline_command(t_exec_step *step, int *fds, t_shell *shell, int out_fd);
+int							*first_cmd(t_exec_step *step, int *fd,
+								t_shell *shell, int out_fd);
+int							*mid_cmd(t_exec_step *step, int *fds,
+								t_shell *shell, int out_fd);
 
 /* ----- CMD UTILS -- CLOSE PIPES -- CHILD BUILTINS ----- */
-int			initialize_command_execution_context(t_shell *shell, t_redir **inredir, t_exec_step *step,
-				int *heredoc_fds);
-int			*cleanup_command_resources(int *fds, int *in_fd, int *out_fd,
-				int *heredoc_fds);
-int			execute_builtin_in_child(t_shell *shell, t_exec_step *step, int *fds,
-				int *heredoc_fds);
-void		setup_pipe_descriptors(const t_exec_step *step, int *fds);
+int							cmd_init(t_shell *shell, t_redir **inredir,
+								t_exec_step *step, int *heredoc_fds);
+int							*cmd_cleanup(int *fds, int *in_fd, int *out_fd,
+								int *heredoc_fds);
+int							run_child_builtin(t_shell *shell, t_exec_step *step,
+								int *fds, int *heredoc_fds);
+void						pipe_fds(const t_exec_step *step, int *fds);
 
 /* ----- RUN HEREDOCS ----- */
-// void		execute_heredoc_inputs(t_shell *shell, t_exec_step *step);
-t_list		*execute_heredoc_inputs(t_shell *shell, t_list *steps);
-int			calculate_heredoc_count(t_list *substeps);
-void		bypass_subexpression_heredocs(t_list *heredocs, int num_skipped);
+// void		run_here_docs(t_shell *shell, t_exec_step *step);
+t_list						*run_here_docs(t_shell *shell, t_list *steps);
+int							count_heredocs(t_list *substeps);
+void						skip_sub_heredocs(t_list *heredocs,
+								int num_skipped);
 
 /* ----- IMPLEMENT && || AND REPARSE AGAIN DURING EXECUTION ----- */
-void		process_logical_operators(t_shell *shell, t_exec_step *step, int step_number,
-				t_list **steps);
+void						handle_and_or(t_shell *shell, t_exec_step *step,
+								int step_number, t_list **steps);
 
 /* ----- FUNTIONS TO HANDLE WAITING FOR COMMANDS RAN AND EXIT ----- */
-int			retrieve_exit_status(t_list *exec_steps, t_exec_step *step,
-				t_exec_flags *flags);
-t_list		*await_completion_and_get_status(t_shell *shell, t_exec_step *step,
-				t_list *exec_steps, t_exec_flags *flags);
+int							get_exit(t_list *exec_steps, t_exec_step *step,
+								t_exec_flags *flags);
+t_list						*wait_and_get_exit(t_shell *shell,
+								t_exec_step *step, t_list *exec_steps,
+								t_exec_flags *flags);
 
 /* ----- HANDLE INVALIDATIONS AND CALL CHECK FUNCTIONS ----- */
-void		validate_command_execution(t_shell *shell, t_list **steps, t_exec_step *step,
-				t_exec_flags *flags);
+void						check_command(t_shell *shell, t_list **steps,
+								t_exec_step *step, t_exec_flags *flags);
 
 /* ----- FUNCITONS TO PRINT THE ERR MESSAGE FOR INVALID COMMANDS/FILES ----- */
-void		report_command_not_found(t_shell *shell, t_exec_step *step, bool *exit_flag);
-void		report_command_is_directory(t_shell *shell, t_exec_step *step, bool *exit_flag);
-void		report_file_not_found(t_shell *shell, t_exec_step *step, bool *exit_flag);
-void		report_permission_denied(t_shell *shell, t_exec_step *step,
-				bool *exit_flag);
+void						cmd_not_found(t_shell *shell, t_exec_step *step,
+								bool *exit_flag);
+void						cmd_is_dir(t_shell *shell, t_exec_step *step,
+								bool *exit_flag);
+void						file_not_found(t_shell *shell, t_exec_step *step,
+								bool *exit_flag);
+void						permission_denied(t_shell *shell, t_exec_step *step,
+								bool *exit_flag);
 
 /* ----- FUNCTIONS TO CHECK FOR COMMAND AND FILE VALIDATIONS ----- */
-bool		verify_path_validity(t_exec_step *step);
-bool		verify_command_validity(t_exec_step *step, bool valid_redirs);
-bool		detect_missing_command(t_exec_step *step, bool valid_redirs);
-bool		detect_missing_file(t_exec_step *step, bool valid_redirs);
-bool		detect_permission_issue(t_exec_step *step, bool valid_redirs);
+bool						check_invalid_path(t_exec_step *step);
+bool						check_invalid_command(t_exec_step *step,
+								bool valid_redirs);
+bool						cmd_not_found_check(t_exec_step *step,
+								bool valid_redirs);
+bool						file_not_found_check(t_exec_step *step,
+								bool valid_redirs);
+bool						permission_denied_check(t_exec_step *step,
+								bool valid_redirs);
 
 /* ----- FUNCTION TO HANDLE REDIRECTIONS -----*/
-t_redir		*retrieve_last_input_redirect(t_list *in_redir);
-bool		configure_redirections(t_shell *shell, t_exec_step *step,
-				bool *exit_flag, int *out_fd);
+t_redir						*last_inredir(t_list *in_redir);
+bool						open_redirs(t_shell *shell, t_exec_step *step,
+								bool *exit_flag, int *out_fd);
 
 /* ----- SOME UTILS ----*/
-int			check_directory_status(const char *path);
-void		close_descriptor(int *fd);
-char		*resolve_command_path(char *bin, char **env);
+int							is_dir(const char *path);
+void						ft_close(int *fd);
+char						*get_full_path(char *bin, char **env);
 
 /* ----- FUNCITON TO CHECK VALIDATION OF REDIRECTION -----*/
-int			verify_redirection_access(t_redir *redir_file, t_list **redir);
-bool		validate_redirection_files(t_exec_step *step);
-bool		confirm_redirection_file_exists(t_redir *redir_file, int *out_fd);
+int							check_access_for_redir(t_redir *redir_file,
+								t_list **redir);
+bool						check_valid_redir(t_exec_step *step);
+bool						check_redir_file_exist(t_redir *redir_file,
+								int *out_fd);
 
 #endif

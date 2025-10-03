@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:20 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:21 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:56 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:40:57 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,17 @@
  * @param step
  * @param shell
  */
-void	print_working_directory(t_exec_step *step, t_shell *shell)
+void	ft_pwd(t_exec_step *step, t_shell *shell)
 {
 	char	*dir;
 
 	dir = getcwd(NULL, 0);
 	if (!dir)
-		dir = retrieve_environment_variable(shell, "PWD");
+		dir = get_env(shell, "PWD");
 	if (!dir)
 		return ;
 	printf("%s\n", dir);
-	deallocate_memory(&dir);
+	ft_free(&dir);
 	step->exit_code = 0;
 	shell->last_exit_code = step->exit_code;
 }

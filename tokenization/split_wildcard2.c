@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:55 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:56 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:56 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:56 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	count_quoted_words(const char *str, size_t *num_words, size_t *i)
+bool	handle_quotes_count(const char *str, size_t *num_words, size_t *i)
 {
 	char	quote;
 
@@ -29,7 +29,7 @@ bool	count_quoted_words(const char *str, size_t *num_words, size_t *i)
 	return (false);
 }
 
-bool	split_quoted_wildcard(const char *wc, size_t *i, size_t *word_count,
+bool	handle_quotes_split(const char *wc, size_t *i, size_t *word_count,
 		t_wildcard **wc_split)
 {
 	char	quote;
@@ -43,14 +43,14 @@ bool	split_quoted_wildcard(const char *wc, size_t *i, size_t *word_count,
 		*i += 1;
 		while (wc[*i] != quote && wc[*i] != '\0')
 			*i += 1;
-		wc_seg = remove_quote_characters(build_word_string(wc, start, *i));
+		wc_seg = eat_quotes(create_word(wc, start, *i));
 		if (wc_seg != NULL && wc_seg[0] != '\0')
 		{
-			wc_split[*word_count] = build_wildcard_segment(wc_seg, false);
+			wc_split[*word_count] = create_wc(wc_seg, false);
 			*word_count += 1;
 		}
 		else
-			deallocate_memory(&wc_seg);
+			ft_free(&wc_seg);
 		*i += 1;
 		return (true);
 	}

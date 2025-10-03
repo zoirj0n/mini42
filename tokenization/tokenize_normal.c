@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:11 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:11 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:10 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:11 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	*parse_error(const char *msg, t_token *tkn)
 {
-	release_token_memory(tkn);
+	free_token(tkn);
 	if (msg != NULL)
 		ft_stderr(msg);
 	return (NULL);
@@ -43,8 +43,8 @@ static t_token	*skip_to_end_token(const char *line, size_t *i, t_token *tkn)
 	return (tkn);
 }
 
-t_list	*create_normal_token(const t_shell *shell, const char *line,
-		size_t *idx, bool expand_var)
+t_list	*tokenize_normal(const t_shell *shell, const char *line, size_t *idx,
+		bool expand_var)
 {
 	size_t	i;
 	t_token	*tkn;
@@ -62,10 +62,10 @@ t_list	*create_normal_token(const t_shell *shell, const char *line,
 		return (parse_error("Parse Error: Invalid input\n", tkn));
 	if (skip_to_end_token(line, &i, tkn) == NULL)
 		return (NULL);
-	while (expand_var == true && check_environment_variable(tkn->substr))
-		tkn->substr = resolve_environment_variable(shell, tkn->substr);
-	tkn->substr = strip_dollar_signs(tkn->substr);
-	tkn->substr = remove_quote_characters(tkn->substr);
+	while (expand_var == true && contains_env_var(tkn->substr))
+		tkn->substr = expand_env_var(shell, tkn->substr);
+	tkn->substr = eat_dollars(tkn->substr);
+	tkn->substr = eat_quotes(tkn->substr);
 	if (tkn->substr == NULL)
 		return (parse_error(NULL, tkn));
 	el = ft_lstnew(tkn);

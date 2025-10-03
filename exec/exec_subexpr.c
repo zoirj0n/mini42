@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:58 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:59 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:49:55 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:49:56 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	calculate_heredoc_count(t_list *substeps)
+int	count_heredocs(t_list *substeps)
 {
 	int			num_heredocs;
 	t_exec_step	*step;
@@ -24,7 +24,7 @@ int	calculate_heredoc_count(t_list *substeps)
 		step = substeps->content;
 		if (step->cmd != NULL && step->cmd->redirs != NULL)
 		{
-			last_redir = retrieve_last_input_redirect(step->cmd->redirs);
+			last_redir = last_inredir(step->cmd->redirs);
 			if (last_redir != NULL)
 				num_heredocs++;
 		}
@@ -33,7 +33,7 @@ int	calculate_heredoc_count(t_list *substeps)
 	return (num_heredocs);
 }
 
-void	bypass_subexpression_heredocs(t_list *heredocs, int num_skipped)
+void	skip_sub_heredocs(t_list *heredocs, int num_skipped)
 {
 	int	i;
 
@@ -46,7 +46,7 @@ void	bypass_subexpression_heredocs(t_list *heredocs, int num_skipped)
 		return ;
 	while (i < num_skipped)
 	{
-		deallocate_memory(&heredocs->content);
+		ft_free(&heredocs->content);
 		heredocs->content = NULL;
 		heredocs = heredocs->next;
 		i++;
@@ -60,29 +60,29 @@ static int	parse_and_fork_subexpr(t_shell *shell, t_exec_step *step,
 	int		pid;
 	bool	success;
 
-	sub_tokens = process_input_line(shell, step->subexpr_line, &success);
-	*sub_steps = analyze_token_stream(sub_tokens, &success);
-	ft_lstclear(&sub_tokens, release_token_memory);
+	sub_tokens = tokenize_line(shell, step->subexpr_line, &success);
+	*sub_steps = parse_tokens(sub_tokens, &success);
+	ft_lstclear(&sub_tokens, free_token);
 	ft_lstadd_back(&shell->steps_to_free, ft_lstnew(*sub_steps));
 	pid = fork();
 	if (pid == 0)
 	{
-		execute_commands(shell, *sub_steps, 0, step->subexpr_line);
-		ft_lstclear(&shell->tokens, release_token_memory);
-		release_execution_steps(&shell->steps_to_free);
-		close_descriptor(&g_dupstdin);
-		release_string_array(shell->env);
-		release_string_array(shell->declared_env);
+		exec_cmds(shell, *sub_steps, 0, step->subexpr_line);
+		ft_lstclear(&shell->tokens, free_token);
+		free_steps(&shell->steps_to_free);
+		ft_close(&g_dupstdin);
+		free_split_array(shell->env);
+		free_split_array(shell->declared_env);
 		ft_lstclear(&shell->heredoc_contents, free);
-		deallocate_memory(&shell->fd);
+		ft_free(&shell->fd);
 		get_next_line(-1);
 		exit(shell->last_exit_code);
 	}
 	return (pid);
 }
 
-bool	execute_subexpression(t_shell *shell, t_exec_step *step,
-		t_exec_flags *flags, t_list **steps)
+bool	exec_subexpr(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
+		t_list **steps)
 {
 	int		pid;
 	t_list	*sub_steps;
@@ -90,8 +90,8 @@ bool	execute_subexpression(t_shell *shell, t_exec_step *step,
 
 	pid = parse_and_fork_subexpr(shell, step, &sub_steps);
 	waitpid(pid, &flags->w_status, 0);
-	heredocs_to_skip = calculate_heredoc_count(sub_steps);
-	bypass_subexpression_heredocs(shell->heredoc_contents, heredocs_to_skip);
+	heredocs_to_skip = count_heredocs(sub_steps);
+	skip_sub_heredocs(shell->heredoc_contents, heredocs_to_skip);
 	step->exit_code = WEXITSTATUS(flags->w_status);
 	shell->last_exit_code = step->exit_code;
 	if (!(flags->first_flag))

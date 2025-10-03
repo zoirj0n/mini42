@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:44 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:45 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:49:43 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:49:44 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	open_last_redir(t_list *hd_contents, t_exec_step *step,
 	int	in_fd;
 
 	in_fd = -1;
-	*inredir = retrieve_last_input_redirect(step->cmd->redirs);
+	*inredir = last_inredir(step->cmd->redirs);
 	if (*inredir != NULL)
 	{
 		if ((*inredir)->type == INPUT_REDIR)
@@ -33,25 +33,24 @@ static int	open_last_redir(t_list *hd_contents, t_exec_step *step,
 				hd_contents = hd_contents->next;
 			}
 			ft_putstr_fd(hd_contents->content, heredoc_fds[1]);
-			deallocate_memory(&hd_contents->content);
+			ft_free(&hd_contents->content);
 		}
 	}
 	return (in_fd);
 }
 
-int	*cleanup_command_resources(int *fds, int *in_fd, int *out_fd,
-		int *heredoc_fds)
+int	*cmd_cleanup(int *fds, int *in_fd, int *out_fd, int *heredoc_fds)
 {
-	close_descriptor(in_fd);
-	close_descriptor(out_fd);
-	close_descriptor(&heredoc_fds[0]);
-	close_descriptor(&heredoc_fds[1]);
-	close_descriptor(&fds[1]);
+	ft_close(in_fd);
+	ft_close(out_fd);
+	ft_close(&heredoc_fds[0]);
+	ft_close(&heredoc_fds[1]);
+	ft_close(&fds[1]);
 	return (fds);
 }
 
-int	initialize_command_execution_context(t_shell *shell, t_redir **inredir,
-		t_exec_step *step, int *heredoc_fds)
+int	cmd_init(t_shell *shell, t_redir **inredir, t_exec_step *step,
+		int *heredoc_fds)
 {
 	int	in_fd;
 
@@ -65,28 +64,28 @@ int	initialize_command_execution_context(t_shell *shell, t_redir **inredir,
 	return (in_fd);
 }
 
-int	execute_builtin_in_child(t_shell *shell, t_exec_step *step, int *fds,
+int	run_child_builtin(t_shell *shell, t_exec_step *step, int *fds,
 		int *heredoc_fds)
 {
 	int	exit_code;
 
-	execute_builtin_command(step, shell, true);
-	close_descriptor(&fds[1]);
-	close_descriptor(&fds[0]);
-	close_descriptor(&heredoc_fds[0]);
-	close_descriptor(&heredoc_fds[1]);
-	close_descriptor(&g_dupstdin);
+	run_builtin(step, shell, true);
+	ft_close(&fds[1]);
+	ft_close(&fds[0]);
+	ft_close(&heredoc_fds[0]);
+	ft_close(&heredoc_fds[1]);
+	ft_close(&g_dupstdin);
 	exit_code = step->exit_code;
-	ft_lstclear(&shell->tokens, release_token_memory);
-	release_execution_steps(&shell->steps_to_free);
-	release_string_array(shell->env);
-	release_string_array(shell->declared_env);
+	ft_lstclear(&shell->tokens, free_token);
+	free_steps(&shell->steps_to_free);
+	free_split_array(shell->env);
+	free_split_array(shell->declared_env);
 	ft_lstclear(&shell->heredoc_contents, free);
-	deallocate_memory(&fds);
+	ft_free(&fds);
 	return (exit_code);
 }
 
-void	setup_pipe_descriptors(const t_exec_step *step, int *fds)
+void	pipe_fds(const t_exec_step *step, int *fds)
 {
 	if (step->pipe_next)
 		pipe(fds);

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:20:16 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:20:17 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:50:11 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:50:12 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static char	*read_from_stdin(const t_shell *shell, char *limiter)
 	buff = ft_calloc(1, sizeof(char));
 	if (buff == NULL)
 		return (NULL);
-	limiter = join_and_free_strings(limiter, "\n", 0);
+	limiter = strjoin_free(limiter, "\n", 0);
 	while (1)
 	{
 		if (g_dupstdin != -1)
@@ -37,14 +37,14 @@ static char	*read_from_stdin(const t_shell *shell, char *limiter)
 		line = get_next_line(g_dupstdin);
 		if (line == NULL)
 			break ;
-		if (compare_strings(line, limiter) == 0)
+		if (ft_strcmp(line, limiter) == 0)
 			break ;
-		while (check_environment_variable(line) == true)
-			line = resolve_environment_variable(shell, line);
-		buff = join_and_free_strings(buff, line, 3);
+		while (contains_env_var(line) == true)
+			line = expand_env_var(shell, line);
+		buff = strjoin_free(buff, line, 3);
 	}
-	deallocate_memory(&limiter);
-	deallocate_memory(&line);
+	ft_free(&limiter);
+	ft_free(&line);
 	get_next_line(-1);
 	return (buff);
 }
@@ -65,7 +65,7 @@ static void	run_heredoc(const t_shell *shell, t_exec_step *step,
 			redir = redirs->content;
 			if (redir->type == HEREDOC)
 			{
-				deallocate_memory(&contents);
+				ft_free(&contents);
 				contents = read_from_stdin(shell, redir->limiter);
 			}
 			redirs = redirs->next;
@@ -73,7 +73,7 @@ static void	run_heredoc(const t_shell *shell, t_exec_step *step,
 		if (contents != NULL)
 		{
 			ft_lstadd_back(heredocs, ft_lstnew(ft_strdup(contents)));
-			deallocate_memory(&contents);
+			ft_free(&contents);
 		}
 	}
 }
@@ -85,7 +85,7 @@ static void	run_heredoc(const t_shell *shell, t_exec_step *step,
  * @param shell
  * @param step
  */
-t_list	*execute_heredoc_inputs(t_shell *shell, t_list *steps)
+t_list	*run_here_docs(t_shell *shell, t_list *steps)
 {
 	t_list		*heredocs;
 	t_exec_step	*step;
@@ -99,11 +99,11 @@ t_list	*execute_heredoc_inputs(t_shell *shell, t_list *steps)
 		step = steps->content;
 		if (step->subexpr_line != NULL)
 		{
-			tokens = process_input_line(shell, step->subexpr_line, &success);
-			substeps = analyze_token_stream(tokens, &success);
-			ft_lstclear(&tokens, release_token_memory);
-			ft_lstadd_back(&heredocs, execute_heredoc_inputs(shell, substeps));
-			ft_lstclear(&substeps, release_execution_step);
+			tokens = tokenize_line(shell, step->subexpr_line, &success);
+			substeps = parse_tokens(tokens, &success);
+			ft_lstclear(&tokens, free_token);
+			ft_lstadd_back(&heredocs, run_here_docs(shell, substeps));
+			ft_lstclear(&substeps, free_exec_step);
 			steps = steps->next;
 			continue ;
 		}

@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/10/02 19:25:44 by mdheen            #+#    #+#              #
-#    Updated: 2025/10/02 19:25:47 by mdheen           ###   ########.fr        #
+#    Created: 2025/10/03 16:39:38 by mdheen            #+#    #+#              #
+#    Updated: 2025/10/03 16:59:19 by mdheen           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ TOKENIZATION_SRCS = tokenize_line.c expansion.c \
 					tokenize_operator.c tokenize_line_utils.c tokenize_env_var_str.c
 TOKENIZATION_SRCS := $(addprefix tokenization/, $(TOKENIZATION_SRCS))
 
-PARSING_SRCS = parsing.c parsing_utils.c check_subexprs.c error_checking.c parse_step.c
+PARSING_SRCS = parsing.c parsing_utils.c check_subexprs.c error_checking.c parse_step.c desable_c.c
 PARSING_SRCS := $(addprefix parsing/, $(PARSING_SRCS))
 
 BUILTINS_SRCS = echo.c pwd.c builtins.c env.c exit.c export.c export_utils.c \

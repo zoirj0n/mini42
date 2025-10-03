@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:18:36 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:18:37 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:19 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:40:19 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,25 @@
  * @param env
  * @param home
  */
-void	navigate_to_home(t_shell *shell, t_exec_step *step, char **env,
-		char *home)
+void	move_to_home(t_shell *shell, t_exec_step *step, char **env, char *home)
 {
 	char	*oldpwd;
 
 	oldpwd = getcwd(NULL, 0);
 	if (!oldpwd)
 	{
-		oldpwd = retrieve_environment_variable(shell, "PWD");
-		deallocate_memory(&home);
+		oldpwd = get_env(shell, "PWD");
+		ft_free(&home);
 		return ;
 	}
 	if (!chdir(home) && ft_strlen(oldpwd))
 	{
-		refresh_current_working_directory(env, shell);
-		refresh_old_working_directory(shell, env, oldpwd);
+		find_and_update_pwd(env, shell);
+		find_and_update_oldpwd(shell, env, oldpwd);
 		step->exit_code = 0;
 	}
-	deallocate_memory(&oldpwd);
-	deallocate_memory(&home);
+	ft_free(&oldpwd);
+	ft_free(&home);
 }
 
 /**
@@ -49,7 +48,7 @@ void	navigate_to_home(t_shell *shell, t_exec_step *step, char **env,
  * @param env
  * @return size_t
  */
-size_t	calculate_environment_length(char **env)
+size_t	env_len(char **env)
 {
 	size_t	len;
 

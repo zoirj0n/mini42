@@ -5,24 +5,23 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:08 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:08 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:07 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:07 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	cleanup_environment_tokenization(t_list **el, t_list **tokens,
-		bool *success)
+void	tokenize_env_cleanup(t_list **el, t_list **tokens, bool *success)
 {
 	t_token	*token;
 
 	token = (*el)->content;
 	if (token->substr == NULL)
-		ft_lstclear(el, release_token_memory);
+		ft_lstclear(el, free_token);
 	else if (ft_strncmp(token->substr, "$\"\"", 3) == 0)
 	{
-		deallocate_memory(&token->substr);
+		ft_free(&token->substr);
 		token->substr = ft_strdup("");
 		ft_lstadd_back(tokens, *el);
 	}
@@ -31,7 +30,7 @@ void	cleanup_environment_tokenization(t_list **el, t_list **tokens,
 		ft_lstadd_back(tokens, *el);
 	else if (ft_strlen(token->substr) != 0)
 	{
-		*success = reprocess_environment_token(token, el, tokens);
+		*success = retokenize_env_var(token, el, tokens);
 	}
 	else
 	{
@@ -40,62 +39,62 @@ void	cleanup_environment_tokenization(t_list **el, t_list **tokens,
 	}
 }
 
-bool	process_primary_tokens(const t_shell *shell, const char *line,
-		size_t *i, t_list **tokens)
+bool	first_token_group(const t_shell *shell, const char *line, size_t *i,
+		t_list **tokens)
 {
 	t_list	*el;
 	bool	success;
 
 	success = true;
 	if (line[*i] == '\'')
-		el = create_single_quote_token(shell, line, i);
+		el = tokenize_single_quote(shell, line, i);
 	else if (line[*i] == '\"')
-		el = create_double_quote_token(shell, line, i,
-				!check_previous_heredoc(*tokens));
-	else if (detect_operator_character(line, *i) == true)
-		el = process_operator_token(line, i);
+		el = tokenize_double_quote(shell, line, i,
+				!last_token_was_heredoc(*tokens));
+	else if (is_operator(line, *i) == true)
+		el = tokenize_operator_token(line, i);
 	else
-		el = create_subexpression_token(shell, line, i);
+		el = tokenize_subexpr(shell, line, i);
 	if (el == NULL)
 	{
-		handle_token_error(NULL, tokens, &success);
+		token_error(NULL, tokens, &success);
 		return (false);
 	}
 	ft_lstadd_back(tokens, el);
 	return (true);
 }
 
-bool	process_secondary_tokens(const t_shell *shell, const char *line,
-		size_t *i, t_list **tokens)
+bool	second_token_group(const t_shell *shell, const char *line, size_t *i,
+		t_list **tokens)
 {
 	t_list	*el;
 	bool	success;
 
 	success = true;
-	if (line[*i] == '$' && check_previous_heredoc(*tokens) == false)
+	if (line[*i] == '$' && last_token_was_heredoc(*tokens) == false)
 	{
-		el = extract_environment_variable(shell, line, i);
+		el = tokenize_env_variable(shell, line, i);
 		if (el == NULL)
 		{
-			handle_token_error("Parse Error\n", tokens, &success);
+			token_error("Parse Error\n", tokens, &success);
 			return (false);
 		}
-		cleanup_environment_tokenization(&el, tokens, &success);
+		tokenize_env_cleanup(&el, tokens, &success);
 		if (success == false)
 		{
-			handle_token_error(NULL, tokens, &success);
+			token_error(NULL, tokens, &success);
 			return (false);
 		}
 	}
 	else if (line[*i] == ')')
 	{
-		handle_token_error("Parse Error\n", tokens, &success);
+		token_error("Parse Error\n", tokens, &success);
 		return (false);
 	}
 	return (true);
 }
 
-bool	process_text_and_wildcard(const t_shell *shell, const char *line,
+bool	tokenize_normal_and_wildcard(const t_shell *shell, const char *line,
 		size_t *i, t_list **tokens)
 {
 	t_list	*el;
@@ -103,16 +102,16 @@ bool	process_text_and_wildcard(const t_shell *shell, const char *line,
 	t_token	*token;
 
 	success = true;
-	el = create_normal_token(shell, line, i, !check_previous_heredoc(*tokens));
+	el = tokenize_normal(shell, line, i, !last_token_was_heredoc(*tokens));
 	if (el == NULL)
 	{
-		handle_token_error(NULL, tokens, &success);
+		token_error(NULL, tokens, &success);
 		return (false);
 	}
 	token = el->content;
 	if (ft_strchr(token->substr, '*') != NULL)
 	{
-		if (process_wildcard_token(shell, &el, tokens, &success) == false)
+		if (tokenize_wildcard(shell, &el, tokens, &success) == false)
 			return (false);
 	}
 	else
@@ -120,27 +119,26 @@ bool	process_text_and_wildcard(const t_shell *shell, const char *line,
 	return (true);
 }
 
-t_list	*process_input_line(const t_shell *shell, const char *line,
-		bool *success)
+t_list	*tokenize_line(const t_shell *shell, const char *line, bool *success)
 {
 	size_t	i;
 	t_list	*tokens;
 
 	*success = true;
-	if (detect_token_syntax_errors(line, success) == false)
+	if (check_for_token_errors(line, success) == false)
 		return (NULL);
 	tokens = NULL;
 	i = 0;
 	while (line[i] != '\0')
 	{
-		if (line[i] == '\'' || line[i] == '\"'
-			|| detect_operator_character(line, i) == true || line[i] == '(')
-			*success = process_primary_tokens(shell, line, &i, &tokens);
-		else if ((line[i] == '$' && check_previous_heredoc(tokens) == false)
+		if (line[i] == '\'' || line[i] == '\"' || is_operator(line, i) == true
+			|| line[i] == '(')
+			*success = first_token_group(shell, line, &i, &tokens);
+		else if ((line[i] == '$' && last_token_was_heredoc(tokens) == false)
 			|| line[i] == ')')
-			*success = process_secondary_tokens(shell, line, &i, &tokens);
+			*success = second_token_group(shell, line, &i, &tokens);
 		else if (line[i] != ' ')
-			*success = process_text_and_wildcard(shell, line, &i, &tokens);
+			*success = tokenize_normal_and_wildcard(shell, line, &i, &tokens);
 		if (*success == false)
 			return (NULL);
 		if (line[i] != '\0')

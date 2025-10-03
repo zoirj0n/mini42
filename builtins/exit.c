@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:04 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:05 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:42 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:42:47 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	check_valid_args(t_shell *shell, t_exec_step *step, int i, int *j)
  * @param shell
  * @param child
  */
-void	terminate_shell(t_exec_step *step, t_shell *shell, bool child)
+void	ft_exit(t_exec_step *step, t_shell *shell, bool child)
 {
 	int		i;
 	int		j;
@@ -64,7 +64,7 @@ void	terminate_shell(t_exec_step *step, t_shell *shell, bool child)
 	j = 0;
 	check = true;
 	if (step->cmd->arg_arr[1] && (step->cmd->arg_arr[1][i] == '-'
-			|| step->cmd->arg_arr[1][i] == '+'))
+		|| step->cmd->arg_arr[1][i] == '+'))
 		i++;
 	while (step->cmd->arg_arr[1] && step->cmd->arg_arr[1][i] >= '0'
 		&& step->cmd->arg_arr[1][i] <= '9')

@@ -5,21 +5,21 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:09 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:10 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:46 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:40:46 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	display_export_error(char *arg)
+void	export_error(char *arg)
 {
 	ft_putstr_fd("export: `", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putendl_fd("`: not a valid identifier", STDERR_FILENO);
 }
 
-char	**resize_string_array(char **old, size_t new_size)
+char	**resize_str_arr(char **old, size_t new_size)
 {
 	size_t	i;
 	char	**new_arr;
@@ -33,11 +33,11 @@ char	**resize_string_array(char **old, size_t new_size)
 		new_arr[i] = old[i];
 		i++;
 	}
-	deallocate_memory(&old);
+	ft_free(&old);
 	return (new_arr);
 }
 
-bool	set_variable_value(t_shell *shell, char *to_look, char *key,
+bool	assign_val_to_env(t_shell *shell, char *to_look, char *key,
 		char *key_val)
 {
 	int	i;
@@ -47,9 +47,9 @@ bool	set_variable_value(t_shell *shell, char *to_look, char *key,
 	{
 		if (ft_strncmp(shell->env[i], to_look, ft_strlen(to_look)) == 0)
 		{
-			deallocate_memory(&to_look);
-			deallocate_memory(&shell->env[i]);
-			deallocate_memory(&key);
+			ft_free(&to_look);
+			ft_free(&shell->env[i]);
+			ft_free(&key);
 			shell->env[i] = key_val;
 			return (false);
 		}
@@ -58,40 +58,40 @@ bool	set_variable_value(t_shell *shell, char *to_look, char *key,
 	return (true);
 }
 
-void	display_export_variables(char **val, char **key)
+void	print_the_export_env(char **val, char **key)
 {
 	if (*val[0] == '\0')
 	{
-		deallocate_memory(val);
+		ft_free(val);
 		printf("declare -x %s\n", *key);
 	}
 	else
 	{
-		*val = join_and_free_strings("=\"", *val, 2);
-		*val = join_and_free_strings(*val, "\"", 1);
-		*key = join_and_free_strings(*key, *val, 3);
+		*val = strjoin_free("=\"", *val, 2);
+		*val = strjoin_free(*val, "\"", 1);
+		*key = strjoin_free(*key, *val, 3);
 		printf("declare -x %s\n", *key);
 	}
 }
 
-void	process_export_arguments(char **args, t_shell *shell, bool *error)
+void	run_export_with_args(char **args, t_shell *shell, bool *error)
 {
 	int	i;
 
 	i = 1;
 	while (args[i] != NULL)
 	{
-		if (validate_export_argument(args[i]) == false)
+		if (check_export_arg(args[i]) == false)
 		{
 			*error = true;
-			display_export_error(args[i]);
+			export_error(args[i]);
 		}
 		else if (ft_strchr(args[i], '=') != NULL)
-			modify_environment_variable(shell, args[i]);
+			update_env(shell, args[i]);
 		else
 		{
-			delete_declared_variable(shell, args[i]);
-			modify_declared_variable(shell, args[i]);
+			unset_declared_var(shell, args[i]);
+			update_declared_env(shell, args[i]);
 		}
 		i++;
 	}

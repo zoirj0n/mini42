@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:20:23 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:20:24 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:50:17 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:50:18 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static bool	check_output_redir(t_redir *redir_file)
 	if (redir_file->type == OUTPUT_REDIR || redir_file->type == APPEND)
 	{
 		if ((access(redir_file->file, F_OK) != -1 && access(redir_file->file,
-					W_OK) == -1) || check_directory_status(redir_file->file))
+					W_OK) == -1) || is_dir(redir_file->file))
 		{
 			ft_stderr("minishell: %s: Permission denied\n", redir_file->file);
 			return (false);
@@ -69,7 +69,7 @@ static bool	check_output_redir(t_redir *redir_file)
  * @return true
  * @return false
  */
-bool	validate_redirection_files(t_exec_step *step)
+bool	check_valid_redir(t_exec_step *step)
 {
 	t_list	*redir;
 	t_redir	*redir_file;
@@ -97,11 +97,11 @@ bool	validate_redirection_files(t_exec_step *step)
  * @return true
  * @return false
  */
-bool	confirm_redirection_file_exists(t_redir *redir_file, int *out_fd)
+bool	check_redir_file_exist(t_redir *redir_file, int *out_fd)
 {
 	if (access(redir_file->file, W_OK) == 0)
 	{
-		close_descriptor(out_fd);
+		ft_close(out_fd);
 		if (redir_file->type == APPEND)
 			*out_fd = open(redir_file->file, O_WRONLY | O_APPEND);
 		else
@@ -111,7 +111,7 @@ bool	confirm_redirection_file_exists(t_redir *redir_file, int *out_fd)
 		return (true);
 	}
 	else if ((access(redir_file->file, F_OK) != -1 && access(redir_file->file,
-				W_OK) == -1) || check_directory_status(redir_file->file))
+				W_OK) == -1) || is_dir(redir_file->file))
 		return (false);
 	return (true);
 }
@@ -124,7 +124,7 @@ bool	confirm_redirection_file_exists(t_redir *redir_file, int *out_fd)
  * @param redir
  * @return int
  */
-int	verify_redirection_access(t_redir *redir_file, t_list **redir)
+int	check_access_for_redir(t_redir *redir_file, t_list **redir)
 {
 	if (redir_file->type == INPUT_REDIR)
 	{
@@ -134,7 +134,7 @@ int	verify_redirection_access(t_redir *redir_file, t_list **redir)
 	else if (redir_file->type == OUTPUT_REDIR || redir_file->type == APPEND)
 	{
 		if ((access(redir_file->file, F_OK) != -1 && access(redir_file->file,
-					W_OK) == -1) || check_directory_status(redir_file->file))
+					W_OK) == -1) || is_dir(redir_file->file))
 			return (1);
 	}
 	if (redir_file->type == INPUT_REDIR || redir_file->type == HEREDOC)

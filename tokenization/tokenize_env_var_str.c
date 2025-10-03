@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:59 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:00 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:59 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:59 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static t_list	*tokenize_inside_envvar(const char *line, size_t *idx)
 	return (el);
 }
 
-t_list	*process_environment_string(const char *line, bool *success)
+t_list	*tokenize_env_var_str(const char *line, bool *success)
 {
 	size_t	i;
 	t_list	*tokens;

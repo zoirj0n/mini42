@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:47 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:48 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:47 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:47 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,19 @@ static char	*create_env_var_str(const t_shell *shell, char *str,
 
 	before = ft_substr(str, 0, start - 1);
 	env_var = ft_substr(str, start, end - start + 1);
-	expansion = retrieve_environment_variable(shell, env_var);
-	deallocate_memory(&env_var);
+	expansion = get_env(shell, env_var);
+	ft_free(&env_var);
 	after = ft_substr(str, end + 1, ft_strlen(str));
-	deallocate_memory(&str);
+	ft_free(&str);
 	if (expansion == NULL)
-		str = join_and_free_strings(before, "", 1);
+		str = strjoin_free(before, "", 1);
 	else
-		str = join_and_free_strings(before, expansion, 3);
-	str = join_and_free_strings(str, after, 3);
+		str = strjoin_free(before, expansion, 3);
+	str = strjoin_free(str, after, 3);
 	return (str);
 }
 
-void	track_quote_state(const char *str, const size_t i, bool *in_single,
+void	set_in_quotes(const char *str, const size_t i, bool *in_single,
 		bool *in_double)
 {
 	if (str[i] == '\'' && *in_double == false)
@@ -55,7 +55,7 @@ static bool	skip_to_end(const char *str, size_t *i, size_t *start, size_t *end)
 	return (true);
 }
 
-char	*resolve_environment_variable(const t_shell *shell, char *str)
+char	*expand_env_var(const t_shell *shell, char *str)
 {
 	size_t	i;
 	size_t	start;
@@ -68,7 +68,7 @@ char	*resolve_environment_variable(const t_shell *shell, char *str)
 	in_d_quotes = false;
 	while (str[i] != '\0')
 	{
-		track_quote_state(str, i, &in_s_quotes, &in_d_quotes);
+		set_in_quotes(str, i, &in_s_quotes, &in_d_quotes);
 		if (str[i] == '$' && str[i + 1] != '?' && in_s_quotes == false)
 		{
 			if (ft_isdigit(str[i + 1]))

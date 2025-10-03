@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:05 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:05 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:04 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:05 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*process_operator_token(const char *line, size_t *i)
+t_list	*tokenize_operator_token(const char *line, size_t *i)
 {
 	t_list			*el;
 	t_token_type	operator_type;
@@ -31,20 +31,20 @@ t_list	*process_operator_token(const char *line, size_t *i)
 		operator_type = AND;
 	else
 		operator_type = OR;
-	el = create_operator_token(line, i, operator_type);
+	el = tokenize_operator(line, i, operator_type);
 	return (el);
 }
 
-void	*handle_token_error(const char *msg, t_list **tokens, bool *success)
+void	*token_error(const char *msg, t_list **tokens, bool *success)
 {
 	*success = false;
-	ft_lstclear(tokens, release_token_memory);
+	ft_lstclear(tokens, free_token);
 	if (msg != NULL)
 		ft_stderr(msg);
 	return (NULL);
 }
 
-bool	check_previous_heredoc(t_list *tokens)
+bool	last_token_was_heredoc(t_list *tokens)
 {
 	t_token	*token;
 
@@ -54,28 +54,28 @@ bool	check_previous_heredoc(t_list *tokens)
 	return (token->type == HEREDOC);
 }
 
-bool	process_wildcard_token(const t_shell *shell, t_list **el,
-		t_list **tokens, bool *success)
+bool	tokenize_wildcard(const t_shell *shell, t_list **el, t_list **tokens,
+		bool *success)
 {
 	t_token	*token;
 	t_list	*wildcard_tokens;
 
 	token = (*el)->content;
-	token->substr = apply_wildcard_expansion(token->substr);
+	token->substr = expand_wildcard(token->substr);
 	token->expanded = true;
 	if (ft_strchr(token->substr, '*') == NULL)
 	{
-		wildcard_tokens = process_input_line(shell, token->substr, success);
+		wildcard_tokens = tokenize_line(shell, token->substr, success);
 		if (*success == false || wildcard_tokens == NULL)
 		{
-			ft_lstclear(el, release_token_memory);
-			ft_lstclear(tokens, release_token_memory);
-			ft_lstclear(&wildcard_tokens, release_token_memory);
+			ft_lstclear(el, free_token);
+			ft_lstclear(tokens, free_token);
+			ft_lstclear(&wildcard_tokens, free_token);
 			return (*success);
 		}
 		token = wildcard_tokens->content;
 		token->expanded = true;
-		ft_lstclear(el, release_token_memory);
+		ft_lstclear(el, free_token);
 		ft_lstadd_back(tokens, wildcard_tokens);
 	}
 	else
@@ -83,7 +83,7 @@ bool	process_wildcard_token(const t_shell *shell, t_list **el,
 	return (*success);
 }
 
-bool	detect_token_syntax_errors(const char *line, bool *success)
+bool	check_for_token_errors(const char *line, bool *success)
 {
 	size_t	i;
 	char	quote;
@@ -94,7 +94,7 @@ bool	detect_token_syntax_errors(const char *line, bool *success)
 	quote = '\0';
 	while (line[i] != '\0')
 	{
-		update_quote_state(line[i], &quote, &in_quotes);
+		set_quotes(line[i], &quote, &in_quotes);
 		if (!in_quotes && (line[i] == '\\' || line[i] == ';' || line[i] == '`'
 				|| (line[i] == '&' && line[i + 1] != '&') || (line[i] == '('
 					&& line[i + 1] == ')')))

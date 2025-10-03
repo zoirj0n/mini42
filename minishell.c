@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:51 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:52 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:39:34 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:39:35 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,39 @@
 
 extern int	g_dupstdin;
 
-char	*read_command_line(t_shell *shell)
+char	*minishell_readline(t_shell *shell)
 {
 	char	*line;
 
 	g_dupstdin = dup(0);
-	signal(SIGINT, handle_interrupt_interactive);
+	signal(SIGINT, sigint_interactive);
 	signal(SIGQUIT, SIG_IGN);
 	line = readline("\001\033[1;31m\002minishell$ \001\033[0m\002");
-	reset_after_interrupt(shell);
+	handle_ctrl_c(shell);
 	shell->line = line;
-	signal(SIGQUIT, handle_quit_command);
-	signal(SIGINT, handle_interrupt_command);
-	process_end_of_file(line, shell);
+	signal(SIGQUIT, sigquit_command);
+	signal(SIGINT, sigint_command);
+	handle_eof(line, shell);
 	return (line);
 }
 
-void	process_heredoc_inputs(t_shell *shell)
+void	minishell_run_heredocs(t_shell *shell)
 {
-	signal(SIGINT, handle_heredoc_signal);
-	signal(SIGQUIT, handle_heredoc_signal);
-	shell->heredoc_contents = execute_heredoc_inputs(shell, shell->steps);
-	signal(SIGINT, handle_interrupt_command);
-	signal(SIGQUIT, handle_quit_command);
+	signal(SIGINT, hd_sig_handler);
+	signal(SIGQUIT, hd_sig_handler);
+	shell->heredoc_contents = run_here_docs(shell, shell->steps);
+	signal(SIGINT, sigint_command);
+	signal(SIGQUIT, sigquit_command);
 }
 
-void	execute_and_cleanup_shell(t_shell *shell, char *line)
+void	minishell_exec_and_cleanup(t_shell *shell, char *line)
 {
 	if (shell->steps != NULL)
-		execute_commands(shell, shell->steps, 0, shell->line);
-	ft_lstclear(&shell->tokens, release_token_memory);
+		exec_cmds(shell, shell->steps, 0, shell->line);
+	ft_lstclear(&shell->tokens, free_token);
 	ft_lstclear(&shell->heredoc_contents, free);
-	release_execution_steps(&shell->steps_to_free);
+	free_steps(&shell->steps_to_free);
 	rl_on_new_line();
-	deallocate_memory(&line);
-	close_descriptor(&g_dupstdin);
+	ft_free(&line);
+	ft_close(&g_dupstdin);
 }

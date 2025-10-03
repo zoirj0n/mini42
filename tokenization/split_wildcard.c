@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:53 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:53 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:53 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:53 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static t_wildcard	**create_wc_split(char const *str)
 	num_words = 0;
 	while (str[i] != '\0')
 	{
-		if (count_quoted_words(str, &num_words, &i) == true)
+		if (handle_quotes_count(str, &num_words, &i) == true)
 			continue ;
 		if (str[i] == '*')
 			num_words++;
@@ -40,7 +40,7 @@ static t_wildcard	**create_wc_split(char const *str)
 	return (wc_split);
 }
 
-char	*build_word_string(char const *str, const size_t word_start,
+char	*create_word(char const *str, const size_t word_start,
 		const size_t word_end)
 {
 	char	*word;
@@ -52,7 +52,7 @@ char	*build_word_string(char const *str, const size_t word_start,
 	return (word);
 }
 
-t_wildcard	*build_wildcard_segment(char *str, bool is_wildcard)
+t_wildcard	*create_wc(char *str, bool is_wildcard)
 {
 	t_wildcard	*wildcard;
 
@@ -72,12 +72,11 @@ static void	add_non_wc_segment(const char *wc, size_t *i, size_t *num_words,
 	start = *i;
 	while (wc[*i] != '*' && wc[*i] != '\0')
 		*i += 1;
-	wc_split[*num_words] = build_wildcard_segment(build_word_string(wc, start,
-				*i - 1), false);
+	wc_split[*num_words] = create_wc(create_word(wc, start, *i - 1), false);
 	*num_words += 1;
 }
 
-t_wildcard	**parse_wildcard_pattern(const char *wc)
+t_wildcard	**split_wildcard(const char *wc)
 {
 	t_wildcard	**wc_split;
 	size_t		i;
@@ -88,11 +87,10 @@ t_wildcard	**parse_wildcard_pattern(const char *wc)
 	num_words = 0;
 	while (wc[i] != '\0')
 	{
-		if (split_quoted_wildcard(wc, &i, &num_words, wc_split) == true)
+		if (handle_quotes_split(wc, &i, &num_words, wc_split) == true)
 			continue ;
 		if (wc[i] == '*')
-			wc_split[num_words++] = build_wildcard_segment(ft_strdup("*"),
-					true);
+			wc_split[num_words++] = create_wc(ft_strdup("*"), true);
 		while (wc[i] == '*' && wc[i] != '\0')
 			i++;
 		if (wc[i] == '\0')

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:18:53 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:18:54 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:40:31 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:40:31 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	write_echo_content(t_exec_step *step, int i)
  * @param step
  * @param shell
  */
-void	display_echo_output(t_exec_step *step, t_shell *shell)
+void	ft_echo(t_exec_step *step, t_shell *shell)
 {
 	int	i;
 	int	n;

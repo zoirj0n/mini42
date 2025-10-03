@@ -5,32 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:50 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:51 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:50 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:50 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	deallocate_memory(void *memory)
+void	ft_free(void *memory)
 {
 	if (*(void **)memory != NULL)
 		free(*(void **)memory);
 	*(void **)memory = NULL;
 }
 
-void	release_token_memory(void *mem)
+void	free_token(void *mem)
 {
 	t_token	*token;
 
 	token = mem;
-	deallocate_memory(&token->substr);
+	ft_free(&token->substr);
 	if (token->sub_tokens != NULL)
-		ft_lstclear(&token->sub_tokens, release_token_memory);
-	deallocate_memory(&token);
+		ft_lstclear(&token->sub_tokens, free_token);
+	ft_free(&token);
 }
 
-void	release_string_array(char **split)
+void	free_split_array(char **split)
 {
 	size_t	i;
 
@@ -39,8 +39,8 @@ void	release_string_array(char **split)
 	i = 0;
 	while (split[i] != NULL)
 	{
-		deallocate_memory(&split[i]);
+		ft_free(&split[i]);
 		i++;
 	}
-	deallocate_memory(&split);
+	ft_free(&split);
 }

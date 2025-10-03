@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:42 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:43 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:56:39 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:56:40 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	skip_dollar(const char *str, char *trimmed, char *quote, size_t *i)
 	*trimmed = str[*i];
 }
 
-char	*strip_dollar_signs(const char *str)
+char	*eat_dollars(const char *str)
 {
 	size_t	i;
 	size_t	j;
@@ -36,7 +36,7 @@ char	*strip_dollar_signs(const char *str)
 	in_quote = false;
 	while (str[i] != '\0')
 	{
-		update_quote_state(str[i], &quote, &in_quote);
+		set_quotes(str[i], &quote, &in_quote);
 		if (in_quote == true)
 			trimmed_str[j++] = str[i++];
 		else if (str[i] == '$' && (str[i + 1] == '\'' || str[i + 1] == '\"'))
@@ -44,6 +44,6 @@ char	*strip_dollar_signs(const char *str)
 		else
 			trimmed_str[j++] = str[i++];
 	}
-	deallocate_memory(&str);
+	ft_free(&str);
 	return (trimmed_str);
 }

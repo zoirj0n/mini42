@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:20:30 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:20:31 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:50:24 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:50:25 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ static t_list	*wait_cmds(t_list *steps, t_exec_flags *flags)
 	while (steps && flags->step_num_start < flags->step_num)
 	{
 		step = steps->content;
-		if (step->cmd->arg_arr[0]
-			&& !check_directory_status(step->cmd->arg_arr[0])
-			&& (access(step->cmd->arg_arr[0], X_OK) != -1
-				|| check_builtin_command(step)))
+		if (step->cmd->arg_arr[0] && !is_dir(step->cmd->arg_arr[0])
+			&& (access(step->cmd->arg_arr[0], X_OK) != -1 || is_builtin(step)))
 		{
 			waitpid(step->cmd->pid, &flags->w_status, 0);
 		}
@@ -34,8 +32,7 @@ static t_list	*wait_cmds(t_list *steps, t_exec_flags *flags)
 	return (steps);
 }
 
-int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step,
-		t_exec_flags *flags)
+int	get_exit(t_list *exec_steps, t_exec_step *step, t_exec_flags *flags)
 {
 	if (!flags->exit && !WIFEXITED(flags->w_status)
 		&& WIFSIGNALED(flags->w_status))
@@ -52,7 +49,7 @@ int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step,
 	if (!flags->exit)
 	{
 		if (!(((t_exec_step *)exec_steps->content)->pipe_next == false
-				&& requires_parent_execution(exec_steps->content)))
+				&& parent_builtin(exec_steps->content)))
 		{
 			step->exit_code = WEXITSTATUS(flags->w_status);
 		}
@@ -60,7 +57,7 @@ int	retrieve_exit_status(t_list *exec_steps, t_exec_step *step,
 	return (step->exit_code);
 }
 
-t_list	*await_completion_and_get_status(t_shell *shell, t_exec_step *step,
+t_list	*wait_and_get_exit(t_shell *shell, t_exec_step *step,
 		t_list *exec_steps, t_exec_flags *flags)
 {
 	t_list	*steps;
@@ -68,9 +65,9 @@ t_list	*await_completion_and_get_status(t_shell *shell, t_exec_step *step,
 
 	if (step->cmd)
 	{
-		steps = rewind_to_step(exec_steps, flags->step_num_start);
+		steps = reset_to_step(exec_steps, flags->step_num_start);
 		steps = wait_cmds(steps, flags);
-		shell->last_exit_code = retrieve_exit_status(exec_steps, step, flags);
+		shell->last_exit_code = get_exit(exec_steps, step, flags);
 	}
 	else
 	{

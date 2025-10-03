@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:25:23 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:25:23 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:57:47 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:57:48 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static int	terminating_charseq(const char *str, size_t *wc_i, size_t *i,
 	return (CONTINUE);
 }
 
-bool	compare_string_with_wildcard(const char *str, t_wildcard **wc_segs)
+bool	match_str_on_wildcard(const char *str, t_wildcard **wc_segs)
 {
 	size_t	i;
 	size_t	wc_i;

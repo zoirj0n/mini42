@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:24:25 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:24:26 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:55:44 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:55:45 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,18 @@ static bool	parse_subexpr(t_token *token, t_list **steps, t_list *tokens,
 	}
 	step->subexpr_line = ft_strdup(token->substr);
 	ft_lstadd_back(steps, ft_lstnew(step));
-	if (validate_subexpression_token(tokens, &token, step, success) == false)
+	if (check_next_subexpr_token(tokens, &token, step, success) == false)
 		return (false);
 	return (true);
 }
 
-t_list	*analyze_token_stream(t_list *tokens, bool *success)
+t_list	*parse_tokens(t_list *tokens, bool *success)
 {
 	t_token	*token;
 	t_list	*steps;
 
 	steps = NULL;
-	*success = detect_parsing_errors(tokens);
+	*success = check_for_errors(tokens);
 	if (*success == false)
 		return (steps);
 	while (tokens != NULL)
@@ -44,13 +44,13 @@ t_list	*analyze_token_stream(t_list *tokens, bool *success)
 		token = tokens->content;
 		if (token->type == SUB_EXPR)
 			parse_subexpr(token, &steps, tokens, success);
-		else if (check_token_terminator(token) == false)
-			steps = process_parsing_step(&tokens, &token, &steps, success);
+		else if (is_terminator(token) == false)
+			steps = parse_step(&tokens, &token, &steps, success);
 		if (*success == false)
 			return (steps);
 		tokens = tokens->next;
 	}
-	ft_lstiter(steps, convert_list_to_array);
+	ft_lstiter(steps, list_to_str_arr);
 	*success = true;
 	return (steps);
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:51 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:52 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:49:49 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:49:50 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ static bool	run_cmds(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
 {
 	if (!flags->first_flag && flags->valid_redirs)
 	{
-		shell->fd = execute_initial_command(step, shell->fd, shell, out_fd);
+		shell->fd = first_cmd(step, shell->fd, shell, out_fd);
 		flags->first_flag = true;
 	}
 	else if (flags->valid_redirs)
-		shell->fd = execute_pipeline_command(step, shell->fd, shell, out_fd);
+		shell->fd = mid_cmd(step, shell->fd, shell, out_fd);
 	if (step->and_next || step->or_next)
 		return (false);
 	return (true);
@@ -30,7 +30,7 @@ static bool	run_cmds(t_shell *shell, t_exec_step *step, t_exec_flags *flags,
 static t_exec_step	*run_subexpr(t_shell *shell, t_exec_step *step,
 		t_exec_flags *flags, t_list **steps)
 {
-	if (execute_subexpression(shell, step, flags, steps) == false)
+	if (exec_subexpr(shell, step, flags, steps) == false)
 	{
 		flags->action = BREAK;
 		return (step);
@@ -49,15 +49,14 @@ static t_exec_step	*run_exec_cmds(t_shell *shell, t_list **steps, int *out_fd,
 	if (step->subexpr_line != NULL)
 		return (run_subexpr(shell, step, flags, steps));
 	flags->exit = false;
-	flags->valid_redirs = configure_redirections(shell, step, &flags->exit,
-			out_fd);
-	configure_command_path(shell, step);
-	validate_command_execution(shell, steps, step, flags);
+	flags->valid_redirs = open_redirs(shell, step, &flags->exit, out_fd);
+	set_cmd_path(shell, step);
+	check_command(shell, steps, step, flags);
 	if (flags->action == BREAK)
 		return (step);
 	else if (flags->action == CONT)
 	{
-		close_descriptor(out_fd);
+		ft_close(out_fd);
 		return (step);
 	}
 	if (run_cmds(shell, step, flags, *out_fd) == false)
@@ -65,7 +64,7 @@ static t_exec_step	*run_exec_cmds(t_shell *shell, t_list **steps, int *out_fd,
 	return (step);
 }
 
-void	execute_commands(t_shell *shell, t_list *exec_steps, int step_number,
+void	exec_cmds(t_shell *shell, t_list *exec_steps, int step_number,
 		char *current_line)
 {
 	t_exec_step		*step;
@@ -73,8 +72,8 @@ void	execute_commands(t_shell *shell, t_list *exec_steps, int step_number,
 	t_exec_flags	flags;
 	int				out_fd;
 
-	initialize_command_execution(shell, &out_fd, &flags, step_number);
-	steps = navigate_to_step(&flags, exec_steps, &step);
+	init_exec_cmds(shell, &out_fd, &flags, step_number);
+	steps = go_to_step(&flags, exec_steps, &step);
 	if (steps == NULL)
 		return ;
 	while (steps)
@@ -87,9 +86,9 @@ void	execute_commands(t_shell *shell, t_list *exec_steps, int step_number,
 			break ;
 		steps = steps->next;
 	}
-	close_descriptor(&shell->fd[0]);
-	close_descriptor(&out_fd);
-	steps = await_completion_and_get_status(shell, step, exec_steps, &flags);
+	ft_close(&shell->fd[0]);
+	ft_close(&out_fd);
+	steps = wait_and_get_exit(shell, step, exec_steps, &flags);
 	shell->current_line = current_line;
-	process_logical_operators(shell, step, flags.step_num, &steps);
+	handle_and_or(shell, step, flags.step_num, &steps);
 }

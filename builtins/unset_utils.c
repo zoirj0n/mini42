@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 19:19:25 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/02 19:19:25 by mdheen           ###   ########.fr       */
+/*   Created: 2025/10/03 16:41:01 by mdheen            #+#    #+#             */
+/*   Updated: 2025/10/03 16:41:01 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	erase_environment_entry(t_shell *shell, char **env_copy, char *to_look)
+void	remove_env_var(t_shell *shell, char **env_copy, char *to_look)
 {
 	size_t	i;
 	size_t	j;
@@ -24,11 +24,11 @@ void	erase_environment_entry(t_shell *shell, char **env_copy, char *to_look)
 		if (ft_strncmp(shell->env[i], to_look, ft_strlen(to_look)) != 0)
 			env_copy[j++] = shell->env[i++];
 		else
-			deallocate_memory(&shell->env[i++]);
+			ft_free(&shell->env[i++]);
 	}
 }
 
-void	erase_declared_entry(t_shell *shell, char **env_copy, char *to_look)
+void	remove_declared_env_var(t_shell *shell, char **env_copy, char *to_look)
 {
 	size_t	i;
 	size_t	j;
@@ -41,6 +41,6 @@ void	erase_declared_entry(t_shell *shell, char **env_copy, char *to_look)
 				ft_strlen(to_look)) != 0)
 			env_copy[j++] = shell->declared_env[i++];
 		else
-			deallocate_memory(&shell->declared_env[i++]);
+			ft_free(&shell->declared_env[i++]);
 	}
 }
