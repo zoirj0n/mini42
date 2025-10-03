@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 16:39:25 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 16:39:27 by mdheen           ###   ########.fr       */
+/*   Updated: 2025/10/03 21:14:44 by zoisobir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// This is ft_strjoin but with an additional argument
-// to specify which input strings to free
 char	*strjoin_free(char *s1, char *s2, int f)
 {
 	char	*joined;
