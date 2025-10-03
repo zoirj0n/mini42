@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 16:39:34 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 18:40:40 by mdheen           ###   ########.fr       */
+/*   Updated: 2025/10/03 18:49:03 by zoisobir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	init_shell(t_shell *shell, char **env)
 	}
 	shell->last_exit_code = 0;
 }
+
 char	*minishell_readline(t_shell *shell)
 {
 	char	*line;
