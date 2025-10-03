@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 16:58:59 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 17:01:27 by mdheen           ###   ########.fr       */
+/*   Updated: 2025/10/03 18:21:02 by zoisobir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,19 +99,15 @@ int	main(int argc, char **argv, char **env)
 	while (1)
 	{
 		line = minishell_readline(&shell);
-		if (add_to_history(line) == false)
-			continue ;
+		check_history(line);
 		success = true;
 		shell.tokens = tokenize_line(&shell, line, &success);
-		if (handle_tokenization_error(&shell, success, line) == false)
-			continue ;
+		check_handler_tokenization_err(&shell, success, line);
 		shell.steps = parse_tokens(shell.tokens, &success);
 		ft_lstadd_back(&shell.steps_to_free, ft_lstnew(shell.steps));
-		if (handle_parsing_error(&shell, success, line) == false)
-			continue ;
+		check_handler_parsing_err(&shell, success, line);
 		minishell_run_heredocs(&shell);
-		if (handle_heredoc_ctrl_c(&shell, line) == false)
-			continue ;
+		check_heredoc_ctrl_c(&shell, line);
 		minishell_exec_and_cleanup(&shell, line);
 	}
 }

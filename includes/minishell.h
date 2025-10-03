@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
+/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 17:16:52 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 17:54:42 by mdheen           ###   ########.fr       */
+/*   Updated: 2025/10/03 18:21:34 by zoisobir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,9 @@ bool	retokenize_env_var(
 char	*minishell_readline(t_shell *shell);
 void	minishell_run_heredocs(t_shell *shell);
 void	minishell_exec_and_cleanup(t_shell *shell, char *line);
-
+void	check_handler_tokenization_err(t_shell *shell,
+			bool success, char *line);
+void	check_handler_parsing_err(t_shell *shell, bool success, char *line);
+void	check_heredoc_ctrl_c(t_shell *shell, char *line);
+void	check_history(char *line);
 #endif
