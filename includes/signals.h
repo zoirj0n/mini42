@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 18:52:06 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/03 18:52:07 by zoisobir         ###   ########.fr       */
+/*   Updated: 2025/10/03 18:55:05 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef SIGNALS_H
 # define SIGNALS_H
