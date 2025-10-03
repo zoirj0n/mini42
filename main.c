@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mdheen <mdheen@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 16:58:59 by mdheen            #+#    #+#             */
-/*   Updated: 2025/10/03 18:40:23 by mdheen           ###   ########.fr       */
+/*   Updated: 2025/10/03 18:51:10 by mdheen           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 extern int	g_dupstdin;
-
-
 
 bool	add_to_history(const char *line)
 {
@@ -60,7 +58,6 @@ bool	handle_parsing_error(t_shell *shell, bool success, char *line)
 	return (true);
 }
 
-
 static void	read_and_tokenize(t_shell *shell)
 {
 	char	*line;
@@ -96,8 +93,6 @@ int	main(int argc, char **argv, char **env)
 	(void)argv;
 	init_shell(&shell, env);
 	disable_echoctl();
-
 	read_and_tokenize(&shell);
-
 	return (0);
 }
