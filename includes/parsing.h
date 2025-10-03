@@ -6,10 +6,9 @@
 /*   By: zoisobir <zoisobir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 18:52:08 by zoisobir          #+#    #+#             */
-/*   Updated: 2025/10/03 18:52:09 by zoisobir         ###   ########.fr       */
+/*   Updated: 2025/10/03 18:53:22 by zoisobir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef PARSING_H
 # define PARSING_H
